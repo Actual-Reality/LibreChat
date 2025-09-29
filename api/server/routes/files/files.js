@@ -299,6 +299,87 @@ router.get('/code/download/:session_id/:fileId', async (req, res) => {
   }
 });
 
+router.get('/view/:userId/:file_id', fileAccess, async (req, res) => {
+  try {
+    const { userId, file_id } = req.params;
+    logger.debug(`File view requested by user ${userId}: ${file_id}`);
+
+    // Access already validated by fileAccess middleware
+    const file = req.fileAccess.file;
+
+    if (checkOpenAIStorage(file.source) && !file.model) {
+      logger.warn(`File view requested by user ${userId} has no associated model: ${file_id}`);
+      return res.status(400).send('The model used when creating this file is not available');
+    }
+
+    const { getDownloadStream } = getStrategyFunctions(file.source);
+    if (!getDownloadStream) {
+      logger.warn(
+        `File view requested by user ${userId} has no stream method implemented: ${file.source}`,
+      );
+      return res.status(501).send('Not Implemented');
+    }
+
+    const setViewHeaders = () => {
+      const cleanedFilename = cleanFileName(file.filename);
+      // Set headers for inline viewing instead of download
+      res.setHeader('Content-Disposition', `inline; filename="${cleanedFilename}"`);
+      
+      // Set appropriate content type based on file extension
+      const ext = file.filename.toLowerCase().split('.').pop();
+      const contentTypeMap = {
+        'pdf': 'application/pdf',
+        'txt': 'text/plain',
+        'md': 'text/markdown',
+        'html': 'text/html',
+        'json': 'application/json',
+        'csv': 'text/csv',
+        'xml': 'application/xml'
+      };
+      
+      res.setHeader('Content-Type', contentTypeMap[ext] || 'text/plain');
+      res.setHeader('X-File-Metadata', JSON.stringify(file));
+    };
+
+    if (checkOpenAIStorage(file.source)) {
+      req.body = { model: file.model };
+      const endpointMap = {
+        [FileSources.openai]: EModelEndpoint.assistants,
+        [FileSources.azure]: EModelEndpoint.azureAssistants,
+      };
+      const { openai } = await getOpenAIClient({
+        req,
+        res,
+        overrideEndpoint: endpointMap[file.source],
+      });
+      logger.debug(`Viewing file ${file_id} from OpenAI`);
+      const passThrough = await getDownloadStream(file_id, openai);
+      setViewHeaders();
+      logger.debug(`File ${file_id} loaded for viewing from OpenAI`);
+
+      // Handle both Node.js and Web streams
+      const stream =
+        passThrough.body && typeof passThrough.body.getReader === 'function'
+          ? Readable.fromWeb(passThrough.body)
+          : passThrough.body;
+
+      stream.pipe(res);
+    } else {
+      const fileStream = await getDownloadStream(req, file.filepath);
+
+      fileStream.on('error', (streamError) => {
+        logger.error('[VIEW ROUTE] Stream error:', streamError);
+      });
+
+      setViewHeaders();
+      fileStream.pipe(res);
+    }
+  } catch (error) {
+    logger.error('[VIEW ROUTE] Error viewing file:', error);
+    res.status(500).send('Error viewing file');
+  }
+});
+
 router.get('/download/:userId/:file_id', fileAccess, async (req, res) => {
   try {
     const { userId, file_id } = req.params;
