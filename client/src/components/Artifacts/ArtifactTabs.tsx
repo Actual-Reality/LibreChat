@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import type { SandpackPreviewRef, CodeEditorRef } from '@codesandbox/sandpack-react';
 import type { Artifact } from '~/common';
@@ -9,7 +9,6 @@ import { ArtifactCodeEditor } from './ArtifactCodeEditor';
 import { useGetStartupConfig } from '~/data-provider';
 import { ArtifactPreview } from './ArtifactPreview';
 import { MermaidMarkdown } from './MermaidMarkdown';
-import PDFArtifact from './PDFArtifact';
 import { cn } from '~/utils';
 
 export default function ArtifactTabs({
@@ -17,15 +16,11 @@ export default function ArtifactTabs({
   isMermaid,
   editorRef,
   previewRef,
-  initialPage,
-  onPageChange,
 }: {
   artifact: Artifact;
   isMermaid: boolean;
   editorRef: React.MutableRefObject<CodeEditorRef>;
   previewRef: React.MutableRefObject<SandpackPreviewRef>;
-  initialPage?: number;
-  onPageChange?: (page: number) => void;
 }) {
   const { isSubmitting } = useArtifactsContext();
   const { currentCode, setCurrentCode } = useEditorContext();
@@ -42,56 +37,38 @@ export default function ArtifactTabs({
   const contentRef = useRef<HTMLDivElement>(null);
   useAutoScroll({ ref: contentRef, content, isSubmitting });
   const { files, fileKey, template, sharedProps } = useArtifactProps({ artifact });
-
-  // Check if this is a PDF artifact
-  const isPDF = useMemo(() => {
-    const fileName = (artifact as any).filename || (artifact as any).name || '';
-    const fileType = (artifact as any).type || '';
-    return fileName.toLowerCase().endsWith('.pdf') || fileType.includes('pdf');
-  }, [artifact]);
   return (
     <>
-      {!isPDF && (
-        <Tabs.Content
-          ref={contentRef}
-          value="code"
-          id="artifacts-code"
-          className={cn('flex-grow overflow-auto')}
-        >
-          {isMermaid ? (
-            <MermaidMarkdown content={content} isSubmitting={isSubmitting} />
-          ) : (
-            <ArtifactCodeEditor
-              files={files}
-              fileKey={fileKey}
-              template={template}
-              artifact={artifact}
-              editorRef={editorRef}
-              sharedProps={sharedProps}
-            />
-          )}
-        </Tabs.Content>
-      )}
-      <Tabs.Content value="preview" className="flex-grow overflow-auto">
-        {isPDF ? (
-          <PDFArtifact
-            artifact={artifact}
-            initialPage={initialPage}
-            onPageChange={onPageChange}
-            className="h-full"
-          />
+      <Tabs.Content
+        ref={contentRef}
+        value="code"
+        id="artifacts-code"
+        className={cn('flex-grow overflow-auto')}
+      >
+        {isMermaid ? (
+          <MermaidMarkdown content={content} isSubmitting={isSubmitting} />
         ) : (
-          <ArtifactPreview
+          <ArtifactCodeEditor
             files={files}
             fileKey={fileKey}
             template={template}
-            isMermaid={isMermaid}
-            previewRef={previewRef}
+            artifact={artifact}
+            editorRef={editorRef}
             sharedProps={sharedProps}
-            currentCode={currentCode}
-            startupConfig={startupConfig}
           />
         )}
+      </Tabs.Content>
+      <Tabs.Content value="preview" className="flex-grow overflow-auto">
+        <ArtifactPreview
+          files={files}
+          fileKey={fileKey}
+          template={template}
+          isMermaid={isMermaid}
+          previewRef={previewRef}
+          sharedProps={sharedProps}
+          currentCode={currentCode}
+          startupConfig={startupConfig}
+        />
       </Tabs.Content>
     </>
   );

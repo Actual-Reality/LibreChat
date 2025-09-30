@@ -11,7 +11,6 @@ import { CopyCodeButton } from './Code';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
-import { ArtifactProvider } from '~/contexts/ArtifactContext';
 
 export default function Artifacts() {
   const localize = useLocalize();
@@ -20,9 +19,7 @@ export default function Artifacts() {
   const previewRef = useRef<SandpackPreviewRef>();
   const [isVisible, setIsVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [currentPage, setCurrentPage] = useState<number | undefined>();
   const setArtifactsVisible = useSetRecoilState(store.artifactsVisibility);
-  const setCurrentArtifactId = useSetRecoilState(store.currentArtifactId);
 
   useEffect(() => {
     setIsVisible(true);
@@ -56,20 +53,10 @@ export default function Artifacts() {
     setTimeout(() => setArtifactsVisible(false), 300);
   };
 
-  // Function to open artifact with specific page
-  const openArtifactWithPage = (page: number, artifactId?: string) => {
-    setCurrentPage(page);
-    if (artifactId) {
-      setCurrentArtifactId(artifactId);
-    }
-    setArtifactsVisible(true);
-  };
-
   return (
-    <ArtifactProvider openArtifactWithPage={openArtifactWithPage}>
-      <Tabs.Root value={activeTab} onValueChange={setActiveTab} asChild>
-        {/* Main Parent */}
-        <div className="flex h-full w-full items-center justify-center">
+    <Tabs.Root value={activeTab} onValueChange={setActiveTab} asChild>
+      {/* Main Parent */}
+      <div className="flex h-full w-full items-center justify-center">
         {/* Main Container */}
         <div
           className={cn(
@@ -133,8 +120,6 @@ export default function Artifacts() {
             artifact={currentArtifact}
             editorRef={editorRef as React.MutableRefObject<CodeEditorRef>}
             previewRef={previewRef as React.MutableRefObject<SandpackPreviewRef>}
-            initialPage={currentPage}
-            onPageChange={setCurrentPage}
           />
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-border-medium bg-surface-primary-alt p-2 text-sm text-text-secondary">
@@ -162,6 +147,5 @@ export default function Artifacts() {
         </div>
       </div>
     </Tabs.Root>
-    </ArtifactProvider>
   );
 }

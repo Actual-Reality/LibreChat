@@ -39,10 +39,9 @@ RUN \
 COPY --chown=node:node . .
 
 RUN \
-    # React client build (includes all package builds)
+    # React client build
     NODE_OPTIONS="--max-old-space-size=2048" npm run frontend; \
-    # Remove dev dependencies but keep workspace packages
-    npm prune --production --workspaces; \
+    npm prune --production; \
     npm cache clean --force
 
 # Node API setup
