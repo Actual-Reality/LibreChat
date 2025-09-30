@@ -13,13 +13,14 @@ includedTools:
   - "retrieval"
   # - "web_search"
 
+
 # File configuration for RAG
 fileConfig:
   endpoints:
     openAI:
       fileLimit: 10000
       fileSizeLimit: 20    # MB per file
-      totalSizeLimit: 100  # MB total
+      totalSizeLimit: 1000000  # MB total
       supportedMimeTypes:
         - "application/pdf"
         - "text/plain"
@@ -60,7 +61,6 @@ modelSpecs:
       showIconInMenu: true
       showIconInHeader: true
 
-
 # Interface Configuration
 interface:
   fileSearch: true
@@ -86,7 +86,7 @@ registration:
 # Web Search Configuration
 # webSearch:
 #   # Search provider - serper or searxng
-#   searchProvider: "serper"
+#   searchProvider: "serper" # "exa"
 #   # Safe search level
 #   safeSearch: 2             # 0=off, 1=moderate, 2=strict
 
