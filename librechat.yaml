@@ -1,0 +1,265 @@
+# Configuration version (required)
+version: 1.2.1
+
+# Cache settings: Set to true to enable caching
+cache: true
+
+fileStrategy: "azure_blob"
+
+# Global tool configuration - make OpenAI image generation available to ALL endpoints
+includedTools:
+  - "image_gen_oai"
+  - "file_search"
+  - "retrieval"
+  - "web_search"
+
+# File configuration for RAG
+fileConfig:
+  endpoints:
+    openAI:
+      fileLimit: 10000
+      fileSizeLimit: 20    # MB per file
+      totalSizeLimit: 1000000  # MB total
+      supportedMimeTypes:
+        - "application/pdf"
+        - "text/plain"
+        - "text/markdown"
+        - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        - "application/msword"
+        - "text/csv"
+      # Disable OCR processing - use RAG instead
+      disabled: false
+
+  # Global file configuration
+  serverFileSizeLimit: 100
+  avatarSizeLimit: 2
+
+# Model Specifications - Define custom models with display labels
+modelSpecs:
+  enforce: false  # Set to true if you want ONLY these models available
+  prioritize: false # Prioritize these models in the UI
+  list:
+    # OpenAI Models
+    - name: "gpt-4o"
+      label: "GPT-4o"
+      description: "Latest GPT-4 Omni model with multimodal capabilities"
+      preset:
+        endpoint: "openAI"
+        model: "gpt-4o"
+        temperature: 0.7
+        maxTokens: 4096
+        topP: 1.0
+        frequencyPenalty: 0
+        presencePenalty: 0
+      iconURL: "openAI"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    - name: "gpt-4o-mini"
+      label: "GPT-4o Mini"
+      description: "Faster and more cost-effective GPT-4o variant"
+      preset:
+        endpoint: "openAI"
+        model: "gpt-4o-mini-2024-07-18"
+        temperature: 0.7
+        maxTokens: 4096
+        topP: 1.0
+        frequencyPenalty: 0
+        presencePenalty: 0
+      iconURL: "openAI"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    - name: "o3-mini"
+      label: "o3 Mini"
+      description: "OpenAI's advanced reasoning model - efficient version"
+      preset:
+        endpoint: "openAI"
+        model: "o3-mini-2025-01-31"
+        maxTokens: 4096
+        topP: 1.0
+        frequencyPenalty: 0
+        presencePenalty: 0
+      iconURL: "openAI"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    - name: "o3"
+      label: "o3"
+      description: "OpenAI's most advanced reasoning model"
+      preset:
+        endpoint: "openAI"
+        model: "o3-2025-04-16"
+        maxTokens: 4096
+        topP: 1.0
+        frequencyPenalty: 0
+        presencePenalty: 0
+      iconURL: "openAI"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    # Google Vertex AI Models
+    - name: "gemini-25-flash"
+      label: "Gemini 2.5 Flash"
+      description: "Fast and efficient AI responses"
+      preset:
+        endpoint: "google"
+        model: "gemini-2.5-flash"
+        temperature: 0.7
+        maxOutputTokens: 8192
+        topP: 0.9
+        topK: 40
+      iconURL: "google"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    - name: "gemini-25-pro"
+      label: "Gemini 2.5 Pro"
+      description: "Advanced reasoning and analysis capabilities"
+      preset:
+        endpoint: "google"
+        model: "gemini-2.5-pro"
+        temperature: 0.7
+        maxOutputTokens: 8192
+        topP: 0.9
+        topK: 40
+      iconURL: "google"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    # Anthropic Claude Models
+    - name: "claude-35-sonnet"
+      label: "Claude 3.5 Sonnet"
+      description: "Anthropic's balanced model for complex reasoning and analysis"
+      preset:
+        endpoint: "anthropic"
+        model: "claude-3-5-sonnet-latest"
+        temperature: 0.7
+        maxOutputTokens: 8192
+        topP: 0.9
+        topK: 40
+      iconURL: "anthropic"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    - name: "claude-37-sonnet"
+      label: "Claude 3.7 Sonnet"
+      description: "Anthropic's latest and most advanced reasoning model"
+      preset:
+        endpoint: "anthropic"
+        model: "claude-3-7-sonnet-20250219"
+        maxOutputTokens: 8192
+        topP: 0.9
+        topK: 40
+      iconURL: "anthropic"
+      showIconInMenu: true
+      showIconInHeader: true
+
+    # xAI Grok Models
+    - name: "grok-4-0709"
+      label: "Grok 4"
+      description: "xAI's most advanced reasoning model with multimodal capabilities and real-time data access"
+      preset:
+        endpoint: "xAI"
+        model: "grok-4-0709"
+        temperature: 0.7
+        maxTokens: 4096
+        topP: 1.0
+        frequencyPenalty: 0
+        presencePenalty: 0
+      iconURL: "xAI"
+      showIconInMenu: true
+      showIconInHeader: true
+
+# Interface Configuration
+interface:
+  fileSearch: true
+  fileCitations: true
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true
+  sidePanel: true
+  presets: false
+  prompts: true
+  bookmarks: true
+  multiConvo: true
+  agents: true
+  # Add gptPlugins to available endpoints
+  plugins: true
+  # Hide code interpreter toggle from main input field
+  runCode: false
+
+# Registration settings
+registration:
+  socialLogins: ['github', 'google', 'discord', 'openid', 'facebook', 'apple']
+
+# Web Search Configuration
+webSearch:
+  # EXA as search provider - includes search, scraping, and ranking in one API
+  searchProvider: "exa"     # EXA handles everything natively
+  # Safe search level
+  safeSearch: 2             # 0=off, 1=moderate, 2=strict
+
+# Endpoints Configuration
+endpoints:
+  # Assistants configuration - hide code interpreter
+  assistants:
+    # NOTE: "code_interpreter" is excluded to hide code interpreter for assistants
+    capabilities: ["retrieval", "actions", "tools"]
+    # Alternative: to show code interpreter for assistants, add "code_interpreter" to the array:
+    # capabilities: ["code_interpreter", "retrieval", "actions", "tools"]
+
+  google:
+    # This ensures the google endpoint is properly configured
+    # Your environment variables (GOOGLE_KEY, etc.) will still be used
+    models:
+      default: ["gemini-2.5-flash", "gemini-2.5-pro"]  # Available models when selecting Google endpoint
+      fetch: false  # Don't fetch additional models since we have specific ones defined
+
+  openAI:
+    # This ensures the openAI endpoint is properly configured
+    # Your environment variables (OPENAI_API_KEY, etc.) will still be used
+    models:
+      default: ["gpt-4o-mini", "gpt-4o", "o3-mini", "o3"]  # Available models when selecting OpenAI endpoint
+      fetch: false  # Don't fetch additional models since we have specific ones defined
+
+  anthropic:
+    # This ensures the anthropic endpoint is properly configured
+    # Your environment variables (ANTHROPIC_API_KEY, etc.) will still be used
+    models:
+      default: ["claude-3-5-sonnet-latest", "claude-3-7-sonnet-latest"]  # Available models when selecting Anthropic endpoint
+      fetch: false  # Don't fetch additional models since we have specific ones defined
+
+  custom:
+    # Custom endpoint configuration for Grok 4
+    - name: "xAI"
+      apiKey: "${GROK_API_KEY}"
+      baseURL: "https://api.x.ai/v1"
+      models:
+        default: ["grok-4-0709"]
+        fetch: false
+      summarize: false
+      modelDisplayLabel: "Grok 4"
+      headers:
+        "Content-Type": "application/json"
+        "User-Agent": "LibreChat"
+
+  gptPlugins:
+    # Enable the plugins endpoint for tools like DALL-E
+    disabled: false
+    # Make gptPlugins easily accessible for image generation
+    availableAgents: ['classic', 'functions']
+    plugins:
+      # Auto-enable image generation tool for all gptPlugins conversations
+      image_gen_oai: true
+
+  # Enable agents with image generation capabilities
+  agents:
+    disableBuilder: false # Allow users to build agents
+    recursionLimit: 25
+    maxRecursionLimit: 100
+    # Agent Capabilities available to all users (includes "tools" which enables image generation)
+    # NOTE: "execute_code" is excluded to hide code interpreter for agents
+    capabilities: ["file_search", "web_search", "actions", "tools"]
+    # Alternative: to show code interpreter for agents, add "execute_code" to the array:
+    # capabilities: ["execute_code", "file_search", "web_search", "actions", "tools"]
