@@ -6,6 +6,7 @@ import { SourceHovercard, FaviconImage, getCleanDomain } from '~/components/Web/
 import { CitationContext, useCitation, useCompositeCitations } from './Context';
 import { useFileDownload } from '~/data-provider';
 import { useLocalize } from '~/hooks';
+import CitationDialog from './CitationDialog';
 import store from '~/store';
 
 interface CompositeCitationProps {
@@ -122,6 +123,7 @@ export function Citation(props: CitationComponentProps) {
   const { showToast } = useToastContext();
   const { citation, citationId } = props.node?.properties ?? {};
   const { setHoveredCitationId } = useContext(CitationContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const refData = useCitation({
     turn: citation?.turn || 0,
     refType: citation?.refType,
@@ -136,14 +138,14 @@ export function Citation(props: CitationComponentProps) {
     isFileType && !isLocalFile ? (refData as any).fileId : '',
   );
 
-  const handleFileDownload = useCallback(
+  const handleCitationClick = useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
       if (!isFileType || !(refData as any)?.fileId) return;
 
-      // Don't allow download for local files
+      // Don't allow interaction for local files
       if (isLocalFile) {
         showToast({
           status: 'error',
@@ -152,32 +154,10 @@ export function Citation(props: CitationComponentProps) {
         return;
       }
 
-      try {
-        const stream = await downloadFile();
-        if (stream.data == null || stream.data === '') {
-          console.error('Error downloading file: No data found');
-          showToast({
-            status: 'error',
-            message: localize('com_ui_download_error'),
-          });
-          return;
-        }
-        const link = document.createElement('a');
-        link.href = stream.data;
-        link.setAttribute('download', (refData as any).fileName || 'file');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(stream.data);
-      } catch (error) {
-        console.error('Error downloading file:', error);
-        showToast({
-          status: 'error',
-          message: localize('com_ui_download_error'),
-        });
-      }
+      // Open dialog to show citation content
+      setIsDialogOpen(true);
     },
-    [downloadFile, isFileType, isLocalFile, refData, localize, showToast],
+    [isFileType, isLocalFile, refData, localize, showToast],
   );
 
   if (!refData) return null;
@@ -192,15 +172,29 @@ export function Citation(props: CitationComponentProps) {
   };
 
   return (
-    <SourceHovercard
-      source={refData}
-      label={getCitationLabel()}
-      onMouseEnter={() => setHoveredCitationId(citationId || null)}
-      onMouseLeave={() => setHoveredCitationId(null)}
-      onClick={isFileType && !isLocalFile ? handleFileDownload : undefined}
-      isFile={isFileType}
-      isLocalFile={isLocalFile}
-    />
+    <>
+      <SourceHovercard
+        source={refData}
+        label={getCitationLabel()}
+        onMouseEnter={() => setHoveredCitationId(citationId || null)}
+        onMouseLeave={() => setHoveredCitationId(null)}
+        onClick={isFileType && !isLocalFile ? handleCitationClick : undefined}
+        isFile={isFileType}
+        isLocalFile={isLocalFile}
+      />
+      {isFileType && !isLocalFile && (
+        <CitationDialog
+          isOpen={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          source={{
+            ...refData,
+            fileId: (refData as any).fileId,
+            fileName: (refData as any).fileName,
+            metadata: (refData as any).metadata,
+          }}
+        />
+      )}
+    </>
   );
 }
 

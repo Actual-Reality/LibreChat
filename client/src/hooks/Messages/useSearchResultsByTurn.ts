@@ -5,6 +5,7 @@ import { useLocalize } from '~/hooks';
 interface FileSource {
   fileId: string;
   fileName: string;
+  content?: string;
   pages?: number[];
   relevance?: number;
   pageRelevance?: Record<string, number>;
@@ -14,6 +15,7 @@ interface FileSource {
 interface DeduplicatedSource {
   fileId: string;
   fileName: string;
+  content?: string;
   pages: number[];
   relevance: number;
   pageRelevance: Record<string, number>;
@@ -42,7 +44,7 @@ export function useSearchResultsByTurn(attachments?: TAttachment[]) {
 
       // Handle agent file search attachments (following web search pattern)
       if (attachment.type === Tools.file_search && attachment[Tools.file_search]) {
-        const sources = attachment[Tools.file_search].sources;
+        const sources = (attachment[Tools.file_search] as any).sources;
 
         // Deduplicate sources by fileId and merge pages
         const deduplicatedSources = new Map<string, DeduplicatedSource>();
@@ -67,11 +69,16 @@ export function useSearchResultsByTurn(attachments?: TAttachment[]) {
               existing.pages = uniquePages;
               existing.relevance = Math.max(existing.relevance || 0, source.relevance || 0);
               existing.pageRelevance = mergedPageRelevance;
+              // Keep the first content if multiple sources for same file
+              if (!existing.content && source.content) {
+                existing.content = source.content;
+              }
             }
           } else {
             deduplicatedSources.set(fileId, {
               fileId: source.fileId,
               fileName: source.fileName,
+              content: source.content,
               pages: source.pages || [],
               relevance: source.relevance || 0.5,
               pageRelevance: source.pageRelevance || {},
@@ -92,10 +99,7 @@ export function useSearchResultsByTurn(attachments?: TAttachment[]) {
                 title: source.fileName || localize('com_file_unknown'),
                 link: `#file-${source.fileId}`, // Create a pseudo-link for file references
                 attribution: source.fileName || localize('com_file_unknown'), // Show filename in inline display
-                snippet:
-                  source.pages && source.pages.length > 0
-                    ? localize('com_file_pages', { pages: source.pages.join(', ') })
-                    : '', // Only page numbers for hover
+                snippet: source.content || '', // Use the actual content chunk from the vector store
                 type: 'file' as const,
                 // Store additional agent-specific data as properties on the reference
                 fileId: source.fileId,
