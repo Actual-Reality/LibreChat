@@ -8,6 +8,7 @@ import { useAutoScroll } from '~/hooks/Artifacts/useAutoScroll';
 import { ArtifactCodeEditor } from './ArtifactCodeEditor';
 import { useGetStartupConfig } from '~/data-provider';
 import { ArtifactPreview } from './ArtifactPreview';
+<<<<<<< HEAD
 import { cn } from '~/utils';
 
 export default function ArtifactTabs({
@@ -15,6 +16,17 @@ export default function ArtifactTabs({
                                        editorRef,
                                        previewRef,
                                      }: {
+=======
+import { MermaidMarkdown } from './MermaidMarkdown';
+import { cn } from '~/utils';
+
+export default function ArtifactTabs({
+  artifact,
+  isMermaid,
+  editorRef,
+  previewRef,
+}: {
+>>>>>>> d84542c35 (Revert "Merge branch 'main' into alden/citation_work")
   artifact: Artifact;
   editorRef: React.MutableRefObject<CodeEditorRef>;
   previewRef: React.MutableRefObject<SandpackPreviewRef>;
@@ -41,6 +53,7 @@ export default function ArtifactTabs({
         value="code"
         id="artifacts-code"
         className={cn('flex-grow overflow-auto')}
+<<<<<<< HEAD
         tabIndex={-1}
       >
         <ArtifactCodeEditor
@@ -57,6 +70,33 @@ export default function ArtifactTabs({
           files={files}
           fileKey={fileKey}
           template={template}
+          previewRef={previewRef}
+          sharedProps={sharedProps}
+          currentCode={currentCode}
+          startupConfig={startupConfig}
+        />
+=======
+      >
+        {isMermaid ? (
+          <MermaidMarkdown content={content} isSubmitting={isSubmitting} />
+        ) : (
+          <ArtifactCodeEditor
+            files={files}
+            fileKey={fileKey}
+            template={template}
+            artifact={artifact}
+            editorRef={editorRef}
+            sharedProps={sharedProps}
+          />
+        )}
+>>>>>>> d84542c35 (Revert "Merge branch 'main' into alden/citation_work")
+      </Tabs.Content>
+      <Tabs.Content value="preview" className="flex-grow overflow-auto">
+        <ArtifactPreview
+          files={files}
+          fileKey={fileKey}
+          template={template}
+          isMermaid={isMermaid}
           previewRef={previewRef}
           sharedProps={sharedProps}
           currentCode={currentCode}
