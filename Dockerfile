@@ -39,15 +39,10 @@ RUN \
 COPY --chown=node:node . .
 
 RUN \
-    # Build packages in correct order
-    npm run build:data-provider && \
-    npm run build:data-schemas && \
-    npm run build:api && \
-    # React client build
-    NODE_OPTIONS="--max-old-space-size=2048" npm run build:client-package && \
-    cd client && npm run build && \
-    cd .. && \
-    npm prune --production; \
+    # React client build (includes all package builds)
+    NODE_OPTIONS="--max-old-space-size=2048" npm run frontend; \
+    # Ensure workspace packages are properly linked
+    npm install --production; \
     npm cache clean --force
 
 # Node API setup
