@@ -18,12 +18,13 @@ cache: true
 #   image: "firebase"   # Storage for uploaded images in chats
 #   document: "local"   # Storage for document uploads (PDFs, text files, etc.)
 
-# Available strategies: "local", "s3", "firebase"
+# Available strategies: "local", "s3", "firebase", "azure_blob"
 # If not specified, defaults to "local" for all file types
 # You can mix and match strategies based on your needs:
 # - Use S3 for avatars for fast global access
 # - Use Firebase for images with automatic optimization
 # - Use local storage for documents for privacy/compliance
+# - Use Azure Blob Storage for cloud-based file storage with Azure integration
 
 # Custom interface configuration
 interface:
@@ -389,3 +390,140 @@ endpoints:
 #     # instructions: "You are a memory management assistant. Store and manage user information accurately."
 #     # model_parameters:
 #     #   temperature: 0.1
+
+
+# modelSpecs:
+#   enforce: false  # Set to true if you want ONLY these models available
+#   prioritize: false # Prioritize these models in the UI
+#   list:
+#     # OpenAI Models
+#     - name: "gpt-4o"
+#       label: "GPT-4o"
+#       description: "Latest GPT-4 Omni model with multimodal capabilities"
+#       preset:
+#         endpoint: "openAI"
+#         model: "gpt-4o"
+#         temperature: 0.7
+#         maxTokens: 4096
+#         topP: 1.0
+#         frequencyPenalty: 0
+#         presencePenalty: 0
+#       iconURL: "openAI"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     - name: "gpt-4o-mini"
+#       label: "GPT-4o Mini"
+#       description: "Faster and more cost-effective GPT-4o variant"
+#       preset:
+#         endpoint: "openAI"
+#         model: "gpt-4o-mini-2024-07-18"
+#         temperature: 0.7
+#         maxTokens: 4096
+#         topP: 1.0
+#         frequencyPenalty: 0
+#         presencePenalty: 0
+#       iconURL: "openAI"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     - name: "o3-mini"
+#       label: "o3 Mini"
+#       description: "OpenAI's advanced reasoning model - efficient version"
+#       preset:
+#         endpoint: "openAI"
+#         model: "o3-mini-2025-01-31"
+#         maxTokens: 4096
+#         topP: 1.0
+#         frequencyPenalty: 0
+#         presencePenalty: 0
+#       iconURL: "openAI"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     - name: "o3"
+#       label: "o3"
+#       description: "OpenAI's most advanced reasoning model"
+#       preset:
+#         endpoint: "openAI"
+#         model: "o3-2025-04-16"
+#         maxTokens: 4096
+#         topP: 1.0
+#         frequencyPenalty: 0
+#         presencePenalty: 0
+#       iconURL: "openAI"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     # Google Vertex AI Models
+#     - name: "gemini-25-flash"
+#       label: "Gemini 2.5 Flash"
+#       description: "Fast and efficient AI responses"
+#       preset:
+#         endpoint: "google"
+#         model: "gemini-2.5-flash"
+#         temperature: 0.7
+#         maxOutputTokens: 8192
+#         topP: 0.9
+#         topK: 40
+#       iconURL: "google"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     - name: "gemini-25-pro"
+#       label: "Gemini 2.5 Pro"
+#       description: "Advanced reasoning and analysis capabilities"
+#       preset:
+#         endpoint: "google"
+#         model: "gemini-2.5-pro"
+#         temperature: 0.7
+#         maxOutputTokens: 8192
+#         topP: 0.9
+#         topK: 40
+#       iconURL: "google"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     # Anthropic Claude Models
+#     - name: "claude-35-sonnet"
+#       label: "Claude 3.5 Sonnet"
+#       description: "Anthropic's balanced model for complex reasoning and analysis"
+#       preset:
+#         endpoint: "anthropic"
+#         model: "claude-3-5-sonnet-latest"
+#         temperature: 0.7
+#         maxOutputTokens: 8192
+#         topP: 0.9
+#         topK: 40
+#       iconURL: "anthropic"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     - name: "claude-37-sonnet"
+#       label: "Claude 3.7 Sonnet"
+#       description: "Anthropic's latest and most advanced reasoning model"
+#       preset:
+#         endpoint: "anthropic"
+#         model: "claude-3-7-sonnet-20250219"
+#         maxOutputTokens: 8192
+#         topP: 0.9
+#         topK: 40
+#       iconURL: "anthropic"
+#       showIconInMenu: true
+#       showIconInHeader: true
+
+#     # xAI Grok Models
+#     - name: "grok-4-0709"
+#       label: "Grok 4"
+#       description: "xAI's most advanced reasoning model with multimodal capabilities and real-time data access"
+#       preset:
+#         endpoint: "xAI"
+#         model: "grok-4-0709"
+#         temperature: 0.7
+#         maxTokens: 4096
+#         topP: 1.0
+#         frequencyPenalty: 0
+#         presencePenalty: 0
+#       iconURL: "xAI"
+#       showIconInMenu: true
+#       showIconInHeader: true
