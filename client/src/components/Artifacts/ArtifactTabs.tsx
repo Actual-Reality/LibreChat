@@ -11,10 +11,10 @@ import { ArtifactPreview } from './ArtifactPreview';
 import { cn } from '~/utils';
 
 export default function ArtifactTabs({
-  artifact,
-  editorRef,
-  previewRef,
-}: {
+                                       artifact,
+                                       editorRef,
+                                       previewRef,
+                                     }: {
   artifact: Artifact;
   editorRef: React.MutableRefObject<CodeEditorRef>;
   previewRef: React.MutableRefObject<SandpackPreviewRef>;

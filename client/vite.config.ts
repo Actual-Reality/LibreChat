@@ -33,10 +33,32 @@ export default defineConfig(({ command }) => ({
   envDir: '../',
   envPrefix: ['VITE_', 'SCRIPT_', 'DOMAIN_', 'ALLOW_'],
   plugins: [
-    react({
-      jsxRuntime: 'automatic',
+    react(),
+    nodePolyfills({
+      // Configure polyfills to avoid unenv conflicts
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
+      // Exclude problematic modules that cause unenv issues
+      exclude: ['fs', 'readline', 'inspector'],
+      // Use built-in polyfills instead of unenv
+      polyfills: {
+        util: true,
+        stream: true,
+        buffer: true,
+        process: true,
+        events: true,
+        assert: true,
+        crypto: true,
+        url: true,
+        querystring: true,
+        path: true,
+        os: true,
+        constants: true,
+      },
     }),
-    nodePolyfills(),
     VitePWA({
       injectRegister: 'auto', // 'auto' | 'manual' | 'disabled'
       registerType: 'autoUpdate', // 'prompt' | 'autoUpdate'
@@ -48,11 +70,14 @@ export default defineConfig(({ command }) => ({
       workbox: {
         globPatterns: [
           '**/*.{js,css,html}',
+          'assets/favicon*.png',
+          'assets/icon-*.png',
+          'assets/apple-touch-icon*.png',
+          'assets/maskable-icon.png',
           'manifest.webmanifest',
         ],
-        globIgnores: ['images/**/*', '**/*.map'],
+        globIgnores: ['images/**/*', '**/*.map', 'index.html'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
-        navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/oauth/, /^\/api/],
       },
       includeAssets: [],

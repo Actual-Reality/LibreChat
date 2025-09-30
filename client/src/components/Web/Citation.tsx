@@ -6,7 +6,7 @@ import { SourceHovercard, FaviconImage, getCleanDomain } from '~/components/Web/
 import { CitationContext, useCitation, useCompositeCitations } from './Context';
 import { useFileDownload } from '~/data-provider';
 import { useLocalize } from '~/hooks';
-import CitationDialog from './CitationDialog';
+import { useArtifactContext } from '~/contexts/ArtifactContext';
 import store from '~/store';
 
 interface CompositeCitationProps {
@@ -123,7 +123,7 @@ export function Citation(props: CitationComponentProps) {
   const { showToast } = useToastContext();
   const { citation, citationId } = props.node?.properties ?? {};
   const { setHoveredCitationId } = useContext(CitationContext);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { openArtifactWithPage } = useArtifactContext();
   const refData = useCitation({
     turn: citation?.turn || 0,
     refType: citation?.refType,
@@ -133,19 +133,57 @@ export function Citation(props: CitationComponentProps) {
   // Setup file download hook
   const isFileType = refData?.refType === 'file' && (refData as any)?.fileId;
   const isLocalFile = isFileType && (refData as any)?.metadata?.storageType === 'local';
-  const { refetch: downloadFile, data: fileUrl } = useFileDownload(
+  const { refetch: downloadFile } = useFileDownload(
     user?.id ?? '',
     isFileType && !isLocalFile ? (refData as any).fileId : '',
   );
 
-  const handleCitationClick = useCallback(
+  const handleFileClick = useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
       if (!isFileType || !(refData as any)?.fileId) return;
 
-      // Don't allow interaction for local files
+      // Check if this is a PDF file and has page information
+      const fileName = (refData as any)?.fileName || '';
+      const fileId = (refData as any)?.fileId || '';
+      const fileType = (refData as any)?.type || 'application/pdf';
+      const isPDF = fileName.toLowerCase().endsWith('.pdf') || fileType.includes('pdf');
+      const pages = (refData as any)?.pages || [];
+      const pageRelevance = (refData as any)?.pageRelevance || {};
+
+      if (isPDF && openArtifactWithPage) {
+        // Create a PDF artifact and open it in the artifact viewer
+        const pdfArtifact = {
+          id: `pdf-${fileId}`,
+          type: 'pdf',
+          filename: fileName,
+          fileId: fileId,
+          fileType: fileType,
+          content: '', // PDF content will be loaded by the viewer
+          pages: pages,
+          pageRelevance: pageRelevance,
+          lastUpdateTime: Date.now(),
+        };
+
+        console.log('Creating PDF artifact:', pdfArtifact);
+
+        // Store the artifact in the artifacts state
+        const { setArtifacts } = await import('~/store');
+        setArtifacts((prev) => ({
+          ...prev,
+          [`pdf-${fileId}`]: pdfArtifact,
+        }));
+
+        // Open artifact viewer with the first page (most relevant)
+        const firstPage = pages.length > 0 ? pages[0] : 1;
+        console.log('Opening artifact viewer with page:', firstPage, 'artifactId:', `pdf-${fileId}`);
+        openArtifactWithPage(firstPage, `pdf-${fileId}`);
+        return;
+      }
+
+      // For non-PDF files or files without page info, try to download
       if (isLocalFile) {
         showToast({
           status: 'error',
@@ -154,24 +192,32 @@ export function Citation(props: CitationComponentProps) {
         return;
       }
 
-      // Fetch the file URL if not already available
-      if (!fileUrl) {
-        try {
-          await downloadFile();
-        } catch (error) {
-          console.error('Error downloading file:', error);
+      try {
+        const stream = await downloadFile();
+        if (stream.data == null || stream.data === '') {
+          console.error('Error downloading file: No data found');
           showToast({
             status: 'error',
-            message: 'Failed to load file',
+            message: localize('com_ui_download_error'),
           });
           return;
         }
+        const link = document.createElement('a');
+        link.href = stream.data;
+        link.setAttribute('download', (refData as any).fileName || 'file');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(stream.data);
+      } catch (error) {
+        console.error('Error downloading file:', error);
+        showToast({
+          status: 'error',
+          message: localize('com_ui_download_error'),
+        });
       }
-
-      // Open dialog to show citation content
-      setIsDialogOpen(true);
     },
-    [isFileType, isLocalFile, refData, localize, showToast, fileUrl, downloadFile],
+    [downloadFile, isFileType, isLocalFile, refData, localize, showToast, openArtifactWithPage],
   );
 
   if (!refData) return null;
@@ -186,32 +232,15 @@ export function Citation(props: CitationComponentProps) {
   };
 
   return (
-    <>
-      <SourceHovercard
-        source={refData}
-        label={getCitationLabel()}
-        onMouseEnter={() => setHoveredCitationId(citationId || null)}
-        onMouseLeave={() => setHoveredCitationId(null)}
-        onClick={isFileType && !isLocalFile ? handleCitationClick : undefined}
-        isFile={isFileType}
-        isLocalFile={isLocalFile}
-      />
-      {isFileType && !isLocalFile && (
-        <CitationDialog
-          isOpen={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          source={{
-            ...refData,
-            fileId: (refData as any).fileId,
-            fileName: (refData as any).fileName,
-            page: (refData as any).pages?.[0] || (refData as any).page,
-            text: (refData as any).text || refData.snippet,
-            metadata: (refData as any).metadata,
-            link: fileUrl || refData.link || '',
-          }}
-        />
-      )}
-    </>
+    <SourceHovercard
+      source={refData}
+      label={getCitationLabel()}
+      onMouseEnter={() => setHoveredCitationId(citationId || null)}
+      onMouseLeave={() => setHoveredCitationId(null)}
+      onClick={isFileType ? handleFileClick : undefined}
+      isFile={isFileType}
+      isLocalFile={isLocalFile}
+    />
   );
 }
 
