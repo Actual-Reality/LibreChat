@@ -136,14 +136,14 @@ export function Citation(props: CitationComponentProps) {
     isFileType && !isLocalFile ? (refData as any).fileId : '',
   );
 
-  const handleFileView = useCallback(
+  const handleFileDownload = useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
       if (!isFileType || !(refData as any)?.fileId) return;
 
-      // Don't allow viewing for local files
+      // Don't allow download for local files
       if (isLocalFile) {
         showToast({
           status: 'error',
@@ -153,25 +153,31 @@ export function Citation(props: CitationComponentProps) {
       }
 
       try {
-        // Open file in new window using the view endpoint
-        const viewUrl = `/api/files/view/${user?.id}/${(refData as any).fileId}`;
-        const newWindow = window.open(viewUrl, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-        
-        if (!newWindow) {
+        const stream = await downloadFile();
+        if (stream.data == null || stream.data === '') {
+          console.error('Error downloading file: No data found');
           showToast({
             status: 'error',
             message: localize('com_ui_download_error'),
           });
+          return;
         }
+        const link = document.createElement('a');
+        link.href = stream.data;
+        link.setAttribute('download', (refData as any).fileName || 'file');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(stream.data);
       } catch (error) {
-        console.error('Error opening file view:', error);
+        console.error('Error downloading file:', error);
         showToast({
           status: 'error',
           message: localize('com_ui_download_error'),
         });
       }
     },
-    [isFileType, isLocalFile, refData, localize, showToast, user?.id],
+    [downloadFile, isFileType, isLocalFile, refData, localize, showToast],
   );
 
   if (!refData) return null;
@@ -191,7 +197,7 @@ export function Citation(props: CitationComponentProps) {
       label={getCitationLabel()}
       onMouseEnter={() => setHoveredCitationId(citationId || null)}
       onMouseLeave={() => setHoveredCitationId(null)}
-      onClick={isFileType && !isLocalFile ? handleFileView : undefined}
+      onClick={isFileType && !isLocalFile ? handleFileDownload : undefined}
       isFile={isFileType}
       isLocalFile={isLocalFile}
     />
