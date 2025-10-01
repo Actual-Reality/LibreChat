@@ -4,7 +4,7 @@ version: 1.2.1
 # Cache settings: Set to true to enable caching
 cache: true
 
-fileStrategy: "azure_blob"
+fileStrategy: "s3"
 
 # Global tool configuration - make OpenAI image generation available to ALL endpoints
 includedTools:
