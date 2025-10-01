@@ -1,44 +1,57 @@
-FROM node:20-bookworm-slim AS base
-ENV CI=true \
-    PNPM_SKIP_UPDATE_CHECK=true
+# v0.8.0
+
+# Base node image
+FROM node:20-alpine AS node
+
+# Install jemalloc
+RUN apk add --no-cache jemalloc
+RUN apk add --no-cache python3 py3-pip uv
+
+# Set environment variable to use jemalloc
+ENV LD_PRELOAD=/usr/lib/libjemalloc.so.2
+
+# Add `uv` for extended MCP support
+COPY --from=ghcr.io/astral-sh/uv:0.6.13 /uv /uvx /bin/
+RUN uv --version
+
+RUN mkdir -p /app && chown node:node /app
 WORKDIR /app
 
-FROM base AS deps
-WORKDIR /app
-COPY package.json package-lock.json ./
-COPY api/package.json ./api/
-COPY client/package.json ./client/
-COPY packages/api/package.json ./packages/api/
-COPY packages/client/package.json ./packages/client/
-COPY packages/data-provider/package.json ./packages/data-provider/
-COPY packages/data-schemas/package.json ./packages/data-schemas/
-RUN npm ci
-
-FROM deps AS builder
-WORKDIR /app
-COPY . .
-RUN npm run build:data-provider \
- && npm run build:data-schemas \
- && npm run build:api \
- && npm run build:client-package \
- && npm --prefix client run build
-RUN npm prune --omit=dev
-
-FROM base AS runner
-WORKDIR /app
-ENV NODE_ENV=production \
-    HOST=0.0.0.0 \
-    PORT=3080
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/package-lock.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/api ./api
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/client/dist ./client/dist
-COPY --from=builder /app/client/public ./client/public
-COPY --from=builder /app/librechat.yaml ./librechat.yaml
-RUN mkdir -p uploads logs \
- && chown -R node:node /app
 USER node
+
+COPY --chown=node:node package.json package-lock.json ./
+COPY --chown=node:node api/package.json ./api/package.json
+COPY --chown=node:node client/package.json ./client/package.json
+COPY --chown=node:node packages/data-provider/package.json ./packages/data-provider/package.json
+COPY --chown=node:node packages/data-schemas/package.json ./packages/data-schemas/package.json
+COPY --chown=node:node packages/api/package.json ./packages/api/package.json
+
+RUN \
+    # Allow mounting of these files, which have no default
+    touch .env ; \
+    # Create directories for the volumes to inherit the correct permissions
+    mkdir -p /app/client/public/images /app/api/logs /app/uploads ; \
+    npm config set fetch-retry-maxtimeout 600000 ; \
+    npm config set fetch-retries 5 ; \
+    npm config set fetch-retry-mintimeout 15000 ; \
+    npm ci --no-audit
+
+COPY --chown=node:node . .
+
+RUN \
+    # React client build
+    NODE_OPTIONS="--max-old-space-size=2048" npm run frontend; \
+    npm prune --production; \
+    npm cache clean --force
+
+# Node API setup
 EXPOSE 3080
-CMD ["node", "api/server/index.js"]
+ENV HOST=0.0.0.0
+CMD ["npm", "run", "backend"]
+
+# Optional: for client with nginx routing
+# FROM nginx:stable-alpine AS nginx-client
+# WORKDIR /usr/share/nginx/html
+# COPY --from=node /app/client/dist /usr/share/nginx/html
+# COPY client/nginx.conf /etc/nginx/conf.d/default.conf
+# ENTRYPOINT ["nginx", "-g", "daemon off;"]
