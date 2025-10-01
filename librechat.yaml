@@ -37,26 +37,15 @@ fileConfig:
 # Model Specifications - Define custom models with display labels
 modelSpecs:
   enforce: true  # Set to true if you want ONLY these models available
-  prioritize: false # Prioritize these models in the UI
+  prioritize: true # Prioritize these models in the UI
   list:
-    # OpenAI Models
-    - name: "rfp-analyzer"
-      label: "RFP Analyzer"
+    - name: "iris"
+      label: "IRIS"
       default: true
-      description: "Expert in RFPs"
+      description: "Specialized glass melting science expert."
       preset:
         endpoint: "agents"
-        agent_id: "agent_dJUcyrJjN91TQCxe0jcuG"
-      showIconInMenu: true
-      showIconInHeader: true
-    
-    - name: "wood-fiber-expert"
-      label: "Wood Fiber Expert"
-      default: true
-      description: "Expert in materials science, specifically in wood fiber"
-      preset:
-        endpoint: "agents"
-        agent_id: "agent_4-6sdH9tatftSOSFE2bYj"
+        agent_id: "agent_9_c8-V8uAQ2hnVssBAtxv"
       showIconInMenu: true
       showIconInHeader: true
 
@@ -65,9 +54,9 @@ modelSpecs:
 interface:
   fileSearch: true
   fileCitations: true
-  endpointsMenu: true
+  endpointsMenu: false
   modelSelect: false
-  parameters: true
+  parameters: false
   sidePanel: true
   presets: false
   prompts: true
