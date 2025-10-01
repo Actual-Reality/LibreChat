@@ -36,7 +36,6 @@ COPY --from=builder /app/api ./api
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/client/dist ./client/dist
 COPY --from=builder /app/client/public ./client/public
-COPY --from=builder /app/data ./data
 COPY --from=builder /app/librechat.yaml ./librechat.yaml
 RUN mkdir -p uploads logs \
  && chown -R node:node /app
