@@ -19,7 +19,7 @@ fileConfig:
     openAI:
       fileLimit: 10000
       fileSizeLimit: 20    # MB per file
-      totalSizeLimit: 100  # MB total
+      totalSizeLimit: 100000  # MB total
       supportedMimeTypes:
         - "application/pdf"
         - "text/plain"
@@ -31,7 +31,7 @@ fileConfig:
       disabled: false
 
   # Global file configuration
-  serverFileSizeLimit: 100
+  serverFileSizeLimit: 100000
   avatarSizeLimit: 2
 
 # Model Specifications - Define custom models with display labels
