@@ -19,7 +19,7 @@ fileConfig:
     openAI:
       fileLimit: 10000
       fileSizeLimit: 20    # MB per file
-      totalSizeLimit: 100000  # MB total
+      totalSizeLimit: 100  # MB total
       supportedMimeTypes:
         - "application/pdf"
         - "text/plain"
@@ -31,7 +31,7 @@ fileConfig:
       disabled: false
 
   # Global file configuration
-  serverFileSizeLimit: 100000
+  serverFileSizeLimit: 100
   avatarSizeLimit: 2
 
 # Model Specifications - Define custom models with display labels
@@ -45,7 +45,7 @@ modelSpecs:
       description: "Expert in materials science, specifically in wood fiber"
       preset:
         endpoint: "agents"
-        agent_id: "agent_W5St6FG0vGKxpGTfh4QWH"
+        agent_id: "agent_cPIEakEUvERU7mGD5i_Z1"
       showIconInMenu: true
       showIconInHeader: true
 
@@ -63,7 +63,9 @@ interface:
   bookmarks: true
   multiConvo: true
   agents: true
+  # Add gptPlugins to available endpoints
   plugins: true
+  # Hide code interpreter toggle from main input field
   runCode: false
 
 # Registration settings
@@ -72,10 +74,10 @@ registration:
 
 # Web Search Configuration
 # webSearch:
+#   # Search provider - serper or searxng
 #   searchProvider: "serper"
-#   scraperType: "firecrawl"
-#   rerankerType: "cohere"
-#   safeSearch: 2      # 0=off, 1=moderate, 2=strict
+#   # Safe search level
+#   safeSearch: 2             # 0=off, 1=moderate, 2=strict
 
 # Endpoints Configuration
 endpoints:
