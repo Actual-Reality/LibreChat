@@ -179,9 +179,9 @@ mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryW
 MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/test?retryWrites=true&w=majority&appName=<cluster>
 ```
 
-**For ATLAS_MONGO_URI (for RAG API):**
+**For ATLAS_MONGO_DB_URI (for RAG API):**
 ```bash
-ATLAS_MONGO_URI=mongodb+srv://app_user_prod:<app-user-password>@<cluster-name>.mongodb.net/production?retryWrites=true&w=majority&appName=<cluster>
+ATLAS_MONGO_DB_URI=mongodb+srv://app_user_prod:<app-user-password>@<cluster-name>.mongodb.net/production?retryWrites=true&w=majority&appName=<cluster>
 ```
 
 Replace:
