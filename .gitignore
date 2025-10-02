@@ -70,6 +70,7 @@ bower_components/
 .npmrc
 .env*
 my.secrets
+!**/.env.default
 !**/.env.example
 !**/.env.test.example
 cache.json

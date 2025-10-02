@@ -1,168 +1,331 @@
-# Contributor Guidelines
+# Contributing to LibreChat Template
 
-Thank you to all the contributors who have helped make this project possible! We welcome various types of contributions, such as bug reports, documentation improvements, feature requests, and code contributions.
+Thank you for contributing to our LibreChat template project! This guide outlines our branching strategy, development workflow, and best practices.
 
-## Contributing Guidelines
+---
 
-If the feature you would like to contribute has not already received prior approval from the project maintainers (i.e., the feature is currently on the [roadmap](https://github.com/users/danny-avila/projects/2)), please submit a request in the [Feature Requests & Suggestions category](https://github.com/danny-avila/LibreChat/discussions/new?category=feature-requests-suggestions) of the discussions board before beginning work on it. The requests should include specific implementation details, including areas of the application that will be affected by the change (including designs if applicable), and any other relevant information that might be required for a speedy review. However, proposals are not required for small changes, bug fixes, or documentation improvements. Small changes and bug fixes should be tied to an [issue](https://github.com/danny-avila/LibreChat/issues) and included in the corresponding pull request for tracking purposes.
+## Table of Contents
 
-Please note that a pull request involving a feature that has not been reviewed and approved by the project maintainers may be rejected. We appreciate your understanding and cooperation.
+- [Branch Structure](#branch-structure)
+- [Development Workflow](#development-workflow)
+- [Environment Management](#environment-management)
+- [Configuration Files](#configuration-files)
+- [Pull Request Process](#pull-request-process)
+- [Important Rules](#important-rules)
 
-If you would like to discuss the changes you wish to make, join our [Discord community](https://discord.librechat.ai), where you can engage with other contributors and seek guidance from the community.
+---
 
-## Our Standards
+## Branch Structure
 
-We strive to maintain a positive and inclusive environment within our project community. We expect all contributors to adhere to the following standards:
-
-- Using welcoming and inclusive language.
-- Being respectful of differing viewpoints and experiences.
-- Gracefully accepting constructive criticism.
-- Focusing on what is best for the community.
-- Showing empathy towards other community members.
-
-Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that do not align with these standards.
-
-## To contribute to this project, please adhere to the following guidelines:
-
-## 1. Development Setup
-
-1. Use Node.JS 20.x.
-2. Install typescript globally: `npm i -g typescript`.
-3. Run `npm ci` to install dependencies.
-4. Build the data provider: `npm run build:data-provider`.
-5. Build data schemas: `npm run build:data-schemas`.
-6. Build API methods: `npm run build:api`.
-7. Setup and run unit tests:
-    - Copy `.env.test`: `cp api/test/.env.test.example api/test/.env.test`.
-    - Run backend unit tests: `npm run test:api`.
-    - Run frontend unit tests: `npm run test:client`.
-8. Setup and run integration tests:
-    - Build client: `cd client && npm run build`.
-    - Create `.env`: `cp .env.example .env`.
-    - Install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/administration/install-community/), ensure that `mongosh` connects to your local instance.
-    - Run: `npx install playwright`, then `npx playwright install`.
-    - Copy `config.local`: `cp e2e/config.local.example.ts e2e/config.local.ts`.
-    - Copy `librechat.yaml`: `cp librechat.example.yaml librechat.yaml`.
-    - Run: `npm run e2e`.
-
-## 2. Development Notes
-
-1. Before starting work, make sure your main branch has the latest commits with `npm run update`.
-3. Run linting command to find errors: `npm run lint`. Alternatively, ensure husky pre-commit checks are functioning.
-3. After your changes, reinstall packages in your current branch using `npm run reinstall` and ensure everything still works. 
-    - Restart the ESLint server ("ESLint: Restart ESLint Server" in VS Code command bar) and your IDE after reinstalling or updating.
-4. Clear web app localStorage and cookies before and after changes.
-5. For frontend changes, compile typescript before and after changes to check for introduced errors: `cd client && npm run build`.
-6. Run backend unit tests: `npm run test:api`.
-7. Run frontend unit tests: `npm run test:client`.
-8. Run integration tests: `npm run e2e`.
-
-## 3. Git Workflow
-
-We utilize a GitFlow workflow to manage changes to this project's codebase. Follow these general steps when contributing code:
-
-1. Fork the repository and create a new branch with a descriptive slash-based name (e.g., `new/feature/x`).
-2. Implement your changes and ensure that all tests pass.
-3. Commit your changes using conventional commit messages with GitFlow flags. Begin the commit message with a tag indicating the change type, such as "feat" (new feature), "fix" (bug fix), "docs" (documentation), or "refactor" (code refactoring), followed by a brief summary of the changes (e.g., `feat: Add new feature X to the project`).
-4. Submit a pull request with a clear and concise description of your changes and the reasons behind them.
-5. We will review your pull request, provide feedback as needed, and eventually merge the approved changes into the main branch.
-
-## 4. Commit Message Format
-
-We follow the [semantic format](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716) for commit messages.
-
-### Example
+Our repository follows a three-tier branching model:
 
 ```
-feat: add hat wobble
-^--^  ^------------^
-|     |
-|     +-> Summary in present tense.
-|
-+-------> Type: chore, docs, feat, fix, refactor, style, or test.
+main (template defaults)
+  ├── staging/<project-name> (test environment)
+  │     └── <project-name> (production environment)
+  │
+  └── <username>/ENG-XXX-description (feature branches)
 ```
 
-### Commit Guidelines
-- Do your best to reduce the number of commits, organizing them as much possible. Look into [squashing commits](https://www.freecodecamp.org/news/git-squash-commits/) in order to keep a neat history.
-- For those that care about maximizing commits for stats, adhere to the above as I 'squash and merge' an unorganized and/or unformatted commit history, which reduces the number of your commits to 1,:
-```
-* Update Br.tsx
+### Branch Types
 
-* Update Es.tsx
+- **`main`**: Template branch with default/example configurations for new projects
+- **`staging/<project-name>`**: Test environment branches for each project
+- **`<project-name>`**: Production environment branches for each project
+- **`<username>/ENG-XXX-description`**: Feature development branches (Linear ticket format)
 
-* Update Br.tsx
-```
+---
 
+## Development Workflow
 
-## 5. Pull Request Process
+### Adding New Features to Template
 
-When submitting a pull request, please follow these guidelines:
+When developing features that should be available to all projects:
 
-- Ensure that any installation or build dependencies are removed before the end of the layer when doing a build.
-- Update the README.md with details of changes to the interface, including new environment variables, exposed ports, useful file locations, and container parameters.
-- Increase the version numbers in any example files and the README.md to reflect the new version that the pull request represents. We use [SemVer](http://semver.org/) for versioning.
-
-Ensure that your changes meet the following criteria:
-
-- All tests pass as highlighted [above](#1-development-notes).
-- The code is well-formatted and adheres to our coding standards.
-- The commit history is clean and easy to follow. You can use `git rebase` or `git merge --squash` to clean your commit history before submitting the pull request.
-- The pull request description clearly outlines the changes and the reasons behind them. Be sure to include the steps to test the pull request.
-
-## 6. Naming Conventions
-
-Apply the following naming conventions to branches, labels, and other Git-related entities:
-
-- **Branch names:** Descriptive and slash-based (e.g., `new/feature/x`).
-- **Labels:** Descriptive and kebab case (e.g., `bug-fix`).
-- **JS/TS:** Directories and file names: Descriptive and camelCase. First letter uppercased for React files (e.g., `helperFunction.ts, ReactComponent.tsx`).
-- **Docs:** Directories and file names: Descriptive and snake_case (e.g., `config_files.md`).
-
-## 7. TypeScript Conversion
-
-1. **Original State**: The project was initially developed entirely in JavaScript (JS).
-
-2. **Frontend Transition**:
-   - We are in the process of transitioning the frontend from JS to TypeScript (TS).
-   - The transition is nearing completion.
-   - This conversion is feasible due to React's capability to intermix JS and TS prior to code compilation. It's standard practice to compile/bundle the code in such scenarios.
-
-3. **Backend Considerations**:
-   - Transitioning the backend to TypeScript would be a more intricate process, especially for an established Express.js server.
+1. **Create a feature branch from `main`**
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b <username>/ENG-XXX-description
+   ```
    
-   - **Options for Transition**:
-      - **Single Phase Overhaul**: This involves converting the entire backend to TypeScript in one go. It's the most straightforward approach but can be disruptive, especially for larger codebases.
-      
-      - **Incremental Transition**: Convert parts of the backend progressively. This can be done by:
-         - Maintaining a separate directory for TypeScript files.
-         - Gradually migrating and testing individual modules or routes.
-         - Using a build tool like `tsc` to compile TypeScript files independently until the entire transition is complete.
-         
-   - **Compilation Considerations**: 
-      - Introducing a compilation step for the server is an option. This would involve using tools like `ts-node` for development and `tsc` for production builds.
-      - However, this is not a conventional approach for Express.js servers and could introduce added complexity, especially in terms of build and deployment processes.
-      
-   - **Current Stance**: At present, this backend transition is of lower priority and might not be pursued.
+   > Example: `git checkout -b jane/ENG-123-add-rag-pagination`
 
-## 8. Module Import Conventions
+2. **Develop and test your feature locally**
+   ```bash
+   # Make your changes
+   git add .
+   git commit -m "feat: description of your feature"
+   ```
 
-- `npm` packages first, 
-     - from longest line (top) to shortest (bottom)
+3. **Push and create a Pull Request to `main`**
+   ```bash
+   git push origin <username>/ENG-XXX-description
+   ```
+   - Open a PR on GitHub targeting `main`
+   - Request review from team members
+   - Address any feedback
 
-- Followed by typescript types (pertains to data-provider and client workspaces)
-     - longest line (top) to shortest (bottom)
-     - types from package come first
+4. **Roll out to projects**
+   
+   Once merged to `main`, roll out the feature to individual projects:
+   
+   ```bash
+   # Update staging environment
+   git checkout staging/<project-name>
+   git merge main
+   git push origin staging/<project-name>
+   
+   # After testing in staging, update production
+   git checkout <project-name>
+   git merge staging/<project-name>
+   git push origin <project-name>
+   ```
 
-- Lastly, local imports
-     - longest line (top) to shortest (bottom)
-     - imports with alias `~` treated the same as relative import with respect to line length
+### Developing Project-Specific Features
 
-**Note:** ESLint will automatically enforce these import conventions when you run `npm run lint --fix` or through pre-commit hooks.
+When working on features specific to a single project:
+
+1. **Create a feature branch from the staging branch**
+   ```bash
+   git checkout staging/<project-name>
+   git pull origin staging/<project-name>
+   git checkout -b <username>/ENG-XXX-project-specific-feature
+   ```
+   
+   > Example: `git checkout -b alden/ENG-456-customer-portal-auth`
+
+2. **Develop and test in the staging environment**
+
+3. **Create a Pull Request to the staging branch**
+   ```bash
+   git push origin <username>/ENG-XXX-project-specific-feature
+   ```
+   - Open a PR targeting `staging/<project-name>`
+   - Test thoroughly in staging environment
+
+4. **Merge to production after approval**
+   ```bash
+   git checkout <project-name>
+   git merge staging/<project-name>
+   git push origin <project-name>
+   ```
 
 ---
 
-Please ensure that you adapt this summary to fit the specific context and nuances of your project.
+## Environment Management
+
+### Environment File Structure
+
+Each project requires its own environment configuration:
+
+```
+.env                    # Active environment (gitignored)
+.env.example           # Template for new projects (committed to main)
+.env.<project-name>    # Project-specific config (gitignored, stored locally)
+```
+
+### Switching Between Projects
+
+**CRITICAL**: Always save your current environment before switching projects!
+
+```bash
+# Save current project environment
+cp .env .env.<current-project>
+
+# Switch to another project
+git checkout <target-project>
+cp .env.<target-project> .env
+```
+
+### Environment Variable Changes
+
+⚠️ **IMPORTANT**: Before modifying any project's environment variables:
+
+1. **Notify the #engineering channel in Slack**
+2. **Document the change and reason**
+3. **After making changes, save them:**
+   ```bash
+   cp .env .env.<project-name>
+   ```
+
+### Setting Up a New Project Environment
+
+1. **Copy the example environment**
+   ```bash
+   cp .env.example .env.<new-project>
+   ```
+
+2. **Update the variables** according to [deployment guide](./DEPLOYMENT.md)
+
+3. **Load the environment**
+   ```bash
+   cp .env.<new-project> .env
+   ```
 
 ---
 
-## [Go Back to ReadMe](../README.md)
+## Configuration Files
+
+### librechat.yaml
+
+The `librechat.yaml` file contains custom application configuration for LibreChat.
+
+#### Configuration by Branch:
+
+- **`main`**: Contains default/example configuration for new projects
+- **`staging/<project-name>`**: Contains project-specific test environment config
+- **`<project-name>`**: Contains project-specific production environment config
+
+### ⚠️ CRITICAL RULES for librechat.yaml
+
+1. **NEVER merge `librechat.yaml` between branches**
+2. **NEVER push project-specific configs to `main`**
+3. **Each branch maintains its own `librechat.yaml`**
+4. **Commit `librechat.yaml` to its respective branch only**
+
+### Workflow for Configuration Changes
+
+#### Updating Template Defaults (main branch)
+
+```bash
+git checkout main
+# Edit librechat.yaml with example/default values
+git add librechat.yaml
+git commit -m "docs: update example librechat.yaml config"
+git push origin main
+```
+
+#### Updating Project Configuration
+
+```bash
+# For staging environment
+git checkout staging/<project-name>
+# Edit librechat.yaml for test environment
+git add librechat.yaml
+git commit -m "config: update <project-name> staging config"
+git push origin staging/<project-name>
+
+# For production environment (after testing)
+git checkout <project-name>
+# Edit librechat.yaml for production environment
+git add librechat.yaml
+git commit -m "config: update <project-name> production config"
+git push origin <project-name>
+```
+
+---
+
+## Pull Request Process
+
+### PR Title Format
+
+Use conventional commits format:
+
+- `feat: add new authentication provider`
+- `fix: resolve RAG API connection issue`
+- `docs: update deployment instructions`
+- `config: update project settings for staging`
+- `chore: update dependencies`
+
+### PR Checklist
+
+- [ ] Code follows project style guidelines
+- [ ] Tests pass locally
+- [ ] Documentation updated if needed
+- [ ] Environment variables documented
+- [ ] `librechat.yaml` changes only in appropriate branch
+- [ ] Reviewed by at least one team member
+- [ ] #engineering channel notified of any env changes
+
+### Review Process
+
+1. **Submit PR** with clear description of changes
+2. **Request review** from relevant team members
+3. **Address feedback** and update PR
+4. **Merge** after approval (squash and merge preferred)
+
+---
+
+## Important Rules
+
+### 🚫 DO NOT
+
+- ❌ Merge `librechat.yaml` between branches
+- ❌ Push project-specific configs to `main`
+- ❌ Switch branches without saving environment files
+- ❌ Modify environment variables without Slack notification
+- ❌ Commit `.env` files (they're gitignored)
+- ❌ Push directly to `main` or production branches
+
+### ✅ DO
+
+- ✓ Keep `main` branch in default configuration
+- ✓ Test features in staging before production
+- ✓ Save environment files before switching branches
+- ✓ Notify #engineering of env changes
+- ✓ Create feature branches for new work
+- ✓ Use pull requests for all changes
+- ✓ Document configuration changes
+
+---
+
+## Quick Reference
+
+### Common Commands
+
+```bash
+# Start new feature (with Linear ticket)
+git checkout main && git pull
+git checkout -b <username>/ENG-XXX-description
+
+# Switch projects
+cp .env .env.<current-project>
+git checkout <target-project>
+cp .env.<target-project> .env
+
+# Save env changes
+cp .env .env.<project-name>
+
+# Roll out feature to project
+git checkout staging/<project-name>
+git merge main
+# Test in staging, then:
+git checkout <project-name>
+git merge staging/<project-name>
+```
+
+### Branch Flow Diagram
+
+```
+Feature Development:
+<username>/ENG-XXX-description → (PR) → main → staging/<project> → <project>
+
+Project-Specific Development:
+<username>/ENG-XXX-project-feature → (PR) → staging/<project> → <project>
+```
+
+---
+
+## Getting Help
+
+- **Slack**: #engineering channel for questions and notifications
+- **Documentation**: 
+  - [Setup Guide](./librechat-railway-setup.md)
+  - [Deployment Guide](./DEPLOYMENT.md)
+- **Team**: Reach out to any team member for guidance
+
+---
+
+## Version Control Best Practices
+
+1. **Commit often** with descriptive messages
+2. **Pull before push** to avoid conflicts
+3. **Keep commits atomic** (one logical change per commit)
+4. **Use branches** for all development work
+5. **Clean up** feature branches after merging
+6. **Rebase** feature branches on main before PR (optional but recommended)
+
+---
+
+Thank you for following these guidelines and helping maintain a clean, organized codebase! 🚀
