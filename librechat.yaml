@@ -65,9 +65,9 @@ modelSpecs:
 interface:
   fileSearch: true
   fileCitations: true
-  endpointsMenu: true
+  endpointsMenu: false
   modelSelect: false
-  parameters: true
+  parameters: false
   sidePanel: true
   presets: false
   prompts: true
