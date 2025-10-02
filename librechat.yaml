@@ -75,14 +75,8 @@ registration:
 # Web Search Configuration
 webSearch:
   searchProvider: "serper"
-  serperApiKey: '${SERPER_API_KEY}'
-
   scraperType: "firecrawl"
-  firecrawlApiKey: '${FIRECRAWL_API_KEY}'
-
   rerankerType: "cohere"
-  cohereApiKey: '${COHERE_API_KEY}'
-
   safeSearch: 2      # 0=off, 1=moderate, 2=strict
 
 # Endpoints Configuration
