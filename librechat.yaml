@@ -11,7 +11,7 @@ includedTools:
   - "image_gen_oai"
   - "file_search"
   - "retrieval"
-  # - "web_search"
+  - "web_search"
 
 # File configuration for RAG
 fileConfig:
@@ -74,9 +74,7 @@ interface:
   bookmarks: true
   multiConvo: true
   agents: true
-  # Add gptPlugins to available endpoints
   plugins: true
-  # Hide code interpreter toggle from main input field
   runCode: false
 
 # Registration settings
@@ -84,11 +82,11 @@ registration:
   socialLogins: ['github', 'google', 'discord', 'openid', 'facebook', 'apple']
 
 # Web Search Configuration
-# webSearch:
-#   # Search provider - serper or searxng
-#   searchProvider: "serper"
-#   # Safe search level
-#   safeSearch: 2             # 0=off, 1=moderate, 2=strict
+webSearch:
+  searchProvider: "serper"
+  scraperType: "firecrawl"
+  rerankerType: "cohere"
+  safeSearch: 2      # 0=off, 1=moderate, 2=strict
 
 # Endpoints Configuration
 endpoints:
