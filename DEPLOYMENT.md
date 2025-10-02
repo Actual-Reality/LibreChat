@@ -160,11 +160,9 @@ AWS_ACCESS_KEY_ID=""
 AWS_SECRET_ACCESS_KEY=""
 AWS_ENDPOINT_URL="https://b1.us-east-1.storage.railway.app"
 AWS_REGION="us-east-1"
-AWS_S3_FORCE_PATH_STYLE="true"
 ```
 
 _NOTE that `AWS_ENDPOINT_URL` and `AWS_REGION` are static_
-_NOTE that `AWS_S3_FORCE_PATH_STYLE="true"` is REQUIRED for deployment on Railway_
 
 Add these the the client.
 
