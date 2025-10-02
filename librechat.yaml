@@ -37,9 +37,9 @@ fileConfig:
 # Model Specifications - Define custom models with display labels
 modelSpecs:
   enforce: true  # Set to true if you want ONLY these models available
-  prioritize: false # Prioritize these models in the UI
+  prioritize: true # Prioritize these models in the UI
   list:
-    # OpenAI Models
+    # Example Models
     - name: "rfp-analyzer"
       label: "RFP Analyzer"
       default: true
