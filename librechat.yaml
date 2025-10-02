@@ -45,7 +45,7 @@ modelSpecs:
       description: "Specialized glass melting science expert."
       preset:
         endpoint: "agents"
-        agent_id: "agent_9_c8-V8uAQ2hnVssBAtxv"
+        agent_id: "agent_wz2iO3UBt4ZLZ0JlQBjBJ"
       showIconInMenu: true
       showIconInHeader: true
 
