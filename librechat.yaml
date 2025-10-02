@@ -63,9 +63,7 @@ interface:
   bookmarks: true
   multiConvo: true
   agents: true
-  # Add gptPlugins to available endpoints
   plugins: true
-  # Hide code interpreter toggle from main input field
   runCode: false
 
 # Registration settings
