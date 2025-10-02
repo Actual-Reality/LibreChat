@@ -45,7 +45,7 @@ modelSpecs:
       description: "Expert in materials science, specifically in wood fiber"
       preset:
         endpoint: "agents"
-        agent_id: "agent_W5St6FG0vGKxpGTfh4QWH"
+        agent_id: "agent_cPIEakEUvERU7mGD5i_Z1"
       showIconInMenu: true
       showIconInHeader: true
 
