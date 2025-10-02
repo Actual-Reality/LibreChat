@@ -142,7 +142,41 @@ To verify:
 
 ---
 
-## Part 3: Deploy the Application
+## Part 3: Deploy Railway S3 Bucket
+
+### Enable Feature Flag
+
+As of 10/2/2026 Railways "Buckets" feature is behind a feature flag.
+This is enabled for the Actual Reality Technologies Workspace.
+To enable/disable this feature navigate to Workspace Settings -> Feature Flags -> Buckets
+
+### Configure environment
+
+Right click in the project canvas, click "Bucket" and deploy. Once deployed the Credentials tab will be populated. You'll need five variables:
+
+```shell
+AWS_BUCKET_NAME=""
+AWS_ACCESS_KEY_ID=""
+AWS_SECRET_ACCESS_KEY=""
+AWS_ENDPOINT_URL="https://b1.us-east-1.storage.railway.app"
+AWS_REGION="us-east-1"
+```
+
+_NOTE that `AWS_ENDPOINT_URL` and `AWS_REGION` are static_
+
+Add these the the client.
+
+### Configure client
+
+In your clients `librechat.yaml` file you will need to set:
+
+```yaml
+fileStrategy: "s3"
+```
+
+That's it!
+
+## Part 4: Deploy the Application
 
 ### 1. Deploy RAG API Service
 
