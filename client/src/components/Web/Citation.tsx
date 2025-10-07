@@ -133,7 +133,7 @@ export function Citation(props: CitationComponentProps) {
   // Setup file download hook
   const isFileType = refData?.refType === 'file' && (refData as any)?.fileId;
   const isLocalFile = isFileType && (refData as any)?.metadata?.storageType === 'local';
-  const { refetch: downloadFile } = useFileDownload(
+  const { refetch: downloadFile, data: fileUrl } = useFileDownload(
     user?.id ?? '',
     isFileType && !isLocalFile ? (refData as any).fileId : '',
   );
@@ -154,10 +154,24 @@ export function Citation(props: CitationComponentProps) {
         return;
       }
 
+      // Fetch the file URL if not already available
+      if (!fileUrl) {
+        try {
+          await downloadFile();
+        } catch (error) {
+          console.error('Error downloading file:', error);
+          showToast({
+            status: 'error',
+            message: 'Failed to load file',
+          });
+          return;
+        }
+      }
+
       // Open dialog to show citation content
       setIsDialogOpen(true);
     },
-    [isFileType, isLocalFile, refData, localize, showToast],
+    [isFileType, isLocalFile, refData, localize, showToast, fileUrl, downloadFile],
   );
 
   if (!refData) return null;
@@ -191,6 +205,7 @@ export function Citation(props: CitationComponentProps) {
             fileId: (refData as any).fileId,
             fileName: (refData as any).fileName,
             metadata: (refData as any).metadata,
+            link: fileUrl || refData.link || '',
           }}
         />
       )}
