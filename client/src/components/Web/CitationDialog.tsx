@@ -57,7 +57,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
     if (isOpen && isPDF() && source.link) {
       setIsLoading(true);
       setError(null);
-      
+
       // Always fetch the blob to ensure we have a valid reference
       fetch(source.link)
         .then(response => {
@@ -97,7 +97,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
     // Navigate to the cited page if available, otherwise start at page 1
     const targetPage = source.page && source.page > 0 && source.page <= numPages ? source.page : 1;
     setPageNumber(targetPage);
-    
+
     // Set search text for highlighting if available
     if (source.text || source.snippet) {
       // Extract a meaningful search phrase (first 50 chars or first sentence)
@@ -132,7 +132,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
       spans.forEach((span) => {
         const text = (span.textContent || '').toLowerCase();
         const hasMatch = searchWords.some(word => text.includes(word));
-        
+
         if (hasMatch) {
           const htmlSpan = span as HTMLElement;
           htmlSpan.style.backgroundColor = 'rgba(255, 235, 59, 0.5)';
@@ -140,7 +140,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
           htmlSpan.style.padding = '2px 0';
           htmlSpan.setAttribute('data-highlighted', 'true');
           matchedSpans.push(htmlSpan);
-          
+
           if (!firstMatchSpan) {
             firstMatchSpan = htmlSpan;
           }
@@ -150,7 +150,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
       // Scroll to first match and use native selection
       if (firstMatchSpan && matchedSpans.length > 0) {
         (firstMatchSpan as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
+
         // Use native browser selection to highlight the text
         try {
           const selection = window.getSelection();
