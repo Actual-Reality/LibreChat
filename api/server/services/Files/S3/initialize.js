@@ -10,6 +10,8 @@ let s3 = null;
  * Otherwise, the AWS SDK's default credentials chain (including IRSA) is used.
  *
  * If AWS_ENDPOINT_URL is provided, it will be used as the endpoint.
+ * If AWS_S3_FORCE_PATH_STYLE is set to 'false', virtual-hosted-style URLs will be used.
+ * Otherwise, path-style URLs will be used (recommended for S3-compatible services).
  *
  * @returns {S3Client|null} An instance of S3Client if the region is provided; otherwise, null.
  */
@@ -29,10 +31,15 @@ const initializeS3 = () => {
   const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
+  // Check if force path style is enabled (defaults to true for S3-compatible services)
+  const forcePathStyle = process.env.AWS_S3_FORCE_PATH_STYLE !== 'false';
+
   const config = {
     region,
     // Conditionally add the endpoint if it is provided
     ...(endpoint ? { endpoint } : {}),
+    // Force path-style URLs for S3-compatible services like Railway
+    forcePathStyle,
   };
 
   if (accessKeyId && secretAccessKey) {
@@ -40,11 +47,15 @@ const initializeS3 = () => {
       ...config,
       credentials: { accessKeyId, secretAccessKey },
     });
-    logger.info('[initializeS3] S3 initialized with provided credentials.');
+    logger.info(
+      `[initializeS3] S3 initialized with provided credentials (forcePathStyle: ${forcePathStyle}).`,
+    );
   } else {
     // When using IRSA, credentials are automatically provided via the IAM Role attached to the ServiceAccount.
     s3 = new S3Client(config);
-    logger.info('[initializeS3] S3 initialized using default credentials (IRSA).');
+    logger.info(
+      `[initializeS3] S3 initialized using default credentials (IRSA) (forcePathStyle: ${forcePathStyle}).`,
+    );
   }
 
   return s3;
