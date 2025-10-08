@@ -31,14 +31,12 @@ const initializeS3 = () => {
   const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-  // Check if force path style is enabled (defaults to true for S3-compatible services)
   const forcePathStyle = process.env.AWS_S3_FORCE_PATH_STYLE === 'true';
 
   const config = {
     region,
     // Conditionally add the endpoint if it is provided
     ...(endpoint ? { endpoint } : {}),
-    // Force path-style URLs for S3-compatible services like Railway
     forcePathStyle,
   };
 
