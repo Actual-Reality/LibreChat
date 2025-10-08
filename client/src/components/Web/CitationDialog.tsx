@@ -16,10 +16,14 @@ interface CitationDialogProps {
   source: SourceData & {
     fileName?: string;
     fileId?: string;
+    page?: number;
+    text?: string;
     metadata?: {
       storageType?: string;
       type?: string;
       mimeType?: string;
+      start_char?: number;
+      end_char?: number;
     };
   };
 }
@@ -32,6 +36,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string>('');
 
   // Check if the file is a PDF
   const isPDF = useCallback(() => {
@@ -87,8 +92,81 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-    setPageNumber(1);
+    // Navigate to the cited page if available, otherwise start at page 1
+    const targetPage = source.page && source.page > 0 && source.page <= numPages ? source.page : 1;
+    setPageNumber(targetPage);
+    
+    // Set search text for highlighting if available
+    if (source.text || source.snippet) {
+      // Extract a meaningful search phrase (first 50 chars or first sentence)
+      const textToHighlight = source.text || source.snippet || '';
+      const searchPhrase = textToHighlight.substring(0, 100).trim();
+      setSearchText(searchPhrase);
+    }
   };
+
+  // Highlight and select text in the PDF after page renders
+  useEffect(() => {
+    if (!searchText || !pdfUrl) return;
+
+    const timer = setTimeout(() => {
+      const textLayer = document.querySelector('.react-pdf__Page__textContent');
+      if (!textLayer) return;
+
+      // Clear any previous highlights
+      const previousHighlights = textLayer.querySelectorAll('span[data-highlighted="true"]');
+      previousHighlights.forEach((span) => {
+        (span as HTMLElement).style.backgroundColor = '';
+        (span as HTMLElement).style.borderRadius = '';
+        span.removeAttribute('data-highlighted');
+      });
+
+      // Find and highlight matching text
+      const searchWords = searchText.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      const spans = textLayer.querySelectorAll('span');
+      let firstMatchSpan: Element | null = null;
+      let matchedSpans: Element[] = [];
+
+      spans.forEach((span) => {
+        const text = (span.textContent || '').toLowerCase();
+        const hasMatch = searchWords.some(word => text.includes(word));
+        
+        if (hasMatch) {
+          const htmlSpan = span as HTMLElement;
+          htmlSpan.style.backgroundColor = 'rgba(255, 235, 59, 0.5)';
+          htmlSpan.style.borderRadius = '2px';
+          htmlSpan.style.padding = '2px 0';
+          htmlSpan.setAttribute('data-highlighted', 'true');
+          matchedSpans.push(htmlSpan);
+          
+          if (!firstMatchSpan) {
+            firstMatchSpan = htmlSpan;
+          }
+        }
+      });
+
+      // Scroll to first match and use native selection
+      if (firstMatchSpan && matchedSpans.length > 0) {
+        (firstMatchSpan as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Use native browser selection to highlight the text
+        try {
+          const selection = window.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            const range = document.createRange();
+            range.setStartBefore(matchedSpans[0]);
+            range.setEndAfter(matchedSpans[matchedSpans.length - 1]);
+            selection.addRange(range);
+          }
+        } catch (e) {
+          console.debug('Could not create text selection:', e);
+        }
+      }
+    }, 800); // Wait for text layer to render
+
+    return () => clearTimeout(timer);
+  }, [searchText, pageNumber, pdfUrl]);
 
   const onDocumentLoadError = (error: Error) => {
     console.error('Error loading PDF document:', error);
@@ -245,22 +323,12 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
         {/* Header */}
         <div className="flex items-start justify-between border-b border-border-medium p-4">
           <div className="flex-1 pr-4">
-            <div className="mb-2 flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-text-secondary" />
               <h2 className="text-lg font-semibold text-text-primary">
-                {source.attribution || source.title || localize('com_citation_source')}
+                {source.fileName || source.attribution || source.title || localize('com_citation_source')}
               </h2>
             </div>
-            {source.fileName && (
-              <p className="text-sm text-text-secondary">
-                {source.fileName}
-              </p>
-            )}
-            {source.metadata?.storageType && (
-              <p className="text-xs text-text-tertiary">
-                {source.metadata.storageType}
-              </p>
-            )}
           </div>
           <Button
             onClick={() => onOpenChange(false)}

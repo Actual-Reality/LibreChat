@@ -145,9 +145,13 @@ async function enhanceSourcesWithMetadata(sources, appConfig) {
     return {
       ...source,
       fileName: fileRecord.filename || source.fileName || 'Unknown File',
+      text: source.text || source.content, // Preserve the matched text
       metadata: {
         ...source.metadata,
         storageType: configuredStorageType,
+        mimeType: fileRecord.type,
+        start_char: source.metadata?.start_char,
+        end_char: source.metadata?.end_char,
       },
     };
   });

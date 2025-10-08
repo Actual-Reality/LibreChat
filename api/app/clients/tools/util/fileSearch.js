@@ -133,6 +133,9 @@ const createFileSearchTool = async ({ userId, files, entity_id, fileCitations = 
             distance,
             file_id: files[fileIndex]?.file_id,
             page: docInfo.metadata.page || null,
+            text: docInfo.text || docInfo.page_content, // The matched text chunk
+            start_char: docInfo.metadata?.start_char,
+            end_char: docInfo.metadata?.end_char,
           })),
         )
         // TODO: results should be sorted by relevance, not distance
@@ -157,6 +160,11 @@ const createFileSearchTool = async ({ userId, files, entity_id, fileCitations = 
         relevance: 1.0 - result.distance,
         pages: result.page ? [result.page] : [],
         pageRelevance: result.page ? { [result.page]: 1.0 - result.distance } : {},
+        text: result.text,
+        metadata: {
+          start_char: result.start_char,
+          end_char: result.end_char,
+        },
       }));
 
       return [formattedString, { [Tools.file_search]: { sources, fileCitations } }];
