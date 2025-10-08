@@ -46,40 +46,41 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
 
   // Fetch PDF file when dialog opens
   useEffect(() => {
+    let localPdfUrl: string | null = null;
+
     if (isOpen && isPDF() && source.link) {
       setIsLoading(true);
       setError(null);
       
-      // If the link is already a blob URL or data URL, use it directly
-      if (source.link.startsWith('blob:') || source.link.startsWith('data:')) {
-        setPdfUrl(source.link);
-        setIsLoading(false);
-      } else {
-        // Otherwise, fetch the file
-        fetch(source.link)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Failed to fetch PDF');
-            }
-            return response.blob();
-          })
-          .then(blob => {
-            const url = URL.createObjectURL(blob);
-            setPdfUrl(url);
-            setIsLoading(false);
-          })
-          .catch(err => {
-            console.error('Error loading PDF:', err);
-            setError('Failed to load PDF');
-            setIsLoading(false);
-          });
-      }
+      // Always fetch the blob to ensure we have a valid reference
+      fetch(source.link)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch PDF');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          // Create a new blob URL each time the dialog opens
+          const url = URL.createObjectURL(blob);
+          localPdfUrl = url;
+          setPdfUrl(url);
+          setIsLoading(false);
+        })
+        .catch(err => {
+          console.error('Error loading PDF:', err);
+          setError('Failed to load PDF');
+          setIsLoading(false);
+        });
+    } else if (!isOpen) {
+      // Clear the PDF URL when dialog closes
+      setPdfUrl(null);
     }
 
-    // Cleanup blob URL when dialog closes
+    // Cleanup: revoke the blob URL when dialog closes or component unmounts
     return () => {
-      if (pdfUrl && pdfUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(pdfUrl);
+      if (localPdfUrl && localPdfUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(localPdfUrl);
       }
     };
   }, [isOpen, source.link, isPDF]);
