@@ -10,8 +10,8 @@ let s3 = null;
  * Otherwise, the AWS SDK's default credentials chain (including IRSA) is used.
  *
  * If AWS_ENDPOINT_URL is provided, it will be used as the endpoint.
- * If AWS_S3_FORCE_PATH_STYLE is set to 'true', path-style URLs will be used.
- * Otherwise, virtual-hosted-style URLs will be used (recommended for S3-compatible services).
+ * If AWS_S3_FORCE_PATH_STYLE is set to 'true', path-style URLs will be used (recommended for S3-compatible services).
+ * Otherwise, virtual-hosted-style URLs will be used
  *
  * @returns {S3Client|null} An instance of S3Client if the region is provided; otherwise, null.
  */
