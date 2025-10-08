@@ -204,6 +204,8 @@ export function Citation(props: CitationComponentProps) {
             ...refData,
             fileId: (refData as any).fileId,
             fileName: (refData as any).fileName,
+            page: (refData as any).pages?.[0] || (refData as any).page,
+            text: (refData as any).text || refData.snippet,
             metadata: (refData as any).metadata,
             link: fileUrl || refData.link || '',
           }}
