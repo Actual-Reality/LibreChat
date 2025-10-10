@@ -11,7 +11,7 @@ includedTools:
   - "image_gen_oai"
   - "file_search"
   - "retrieval"
-  - "web_search"
+  # - "web_search"
 
 # File configuration for RAG
 fileConfig:
@@ -19,7 +19,7 @@ fileConfig:
     openAI:
       fileLimit: 10000
       fileSizeLimit: 20    # MB per file
-      totalSizeLimit: 100  # MB total
+      totalSizeLimit: 100000  # MB total
       supportedMimeTypes:
         - "application/pdf"
         - "text/plain"
@@ -31,7 +31,7 @@ fileConfig:
       disabled: false
 
   # Global file configuration
-  serverFileSizeLimit: 100
+  serverFileSizeLimit: 100000
   avatarSizeLimit: 2
 
 # Model Specifications - Define custom models with display labels
@@ -39,24 +39,13 @@ modelSpecs:
   enforce: true  # Set to true if you want ONLY these models available
   prioritize: true # Prioritize these models in the UI
   list:
-    # Example Models
-    - name: "rfp-analyzer"
-      label: "RFP Analyzer"
-      default: true
-      description: "Expert in RFPs"
-      preset:
-        endpoint: "agents"
-        agent_id: "agent_dJUcyrJjN91TQCxe0jcuG"
-      showIconInMenu: true
-      showIconInHeader: true
-    
     - name: "wood-fiber-expert"
       label: "Wood Fiber Expert"
       default: true
       description: "Expert in materials science, specifically in wood fiber"
       preset:
         endpoint: "agents"
-        agent_id: "agent_4-6sdH9tatftSOSFE2bYj"
+        agent_id: "agent_W5St6FG0vGKxpGTfh4QWH"
       showIconInMenu: true
       showIconInHeader: true
 
@@ -82,11 +71,11 @@ registration:
   socialLogins: ['github', 'google', 'discord', 'openid', 'facebook', 'apple']
 
 # Web Search Configuration
-webSearch:
-  searchProvider: "serper"
-  scraperType: "firecrawl"
-  rerankerType: "cohere"
-  safeSearch: 2      # 0=off, 1=moderate, 2=strict
+# webSearch:
+#   searchProvider: "serper"
+#   scraperType: "firecrawl"
+#   rerankerType: "cohere"
+#   safeSearch: 2      # 0=off, 1=moderate, 2=strict
 
 # Endpoints Configuration
 endpoints:
