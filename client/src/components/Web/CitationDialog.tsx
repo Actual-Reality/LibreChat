@@ -37,6 +37,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>('');
+  const pdfUrlRef = React.useRef<string | null>(null);
 
   // Check if the file is a PDF
   const isPDF = useCallback(() => {
@@ -51,8 +52,6 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
 
   // Fetch PDF file when dialog opens
   useEffect(() => {
-    let localPdfUrl: string | null = null;
-
     if (isOpen && isPDF() && source.link) {
       setIsLoading(true);
       setError(null);
@@ -68,7 +67,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
         .then(blob => {
           // Create a new blob URL each time the dialog opens
           const url = URL.createObjectURL(blob);
-          localPdfUrl = url;
+          pdfUrlRef.current = url;
           setPdfUrl(url);
           setIsLoading(false);
         })
@@ -84,8 +83,9 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
 
     // Cleanup: revoke the blob URL when dialog closes or component unmounts
     return () => {
-      if (localPdfUrl && localPdfUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(localPdfUrl);
+      if (pdfUrlRef.current && pdfUrlRef.current.startsWith('blob:')) {
+        URL.revokeObjectURL(pdfUrlRef.current);
+        pdfUrlRef.current = null;
       }
     };
   }, [isOpen, source.link, isPDF]);
