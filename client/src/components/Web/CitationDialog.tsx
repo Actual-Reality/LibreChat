@@ -51,6 +51,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
 
   // Fetch PDF file when dialog opens
   useEffect(() => {
+    // Closure-scoped variable to track this effect's blob URL
     let localPdfUrl: string | null = null;
 
     if (isOpen && isPDF() && source.link) {
@@ -86,6 +87,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
     return () => {
       if (localPdfUrl && localPdfUrl.startsWith('blob:')) {
         URL.revokeObjectURL(localPdfUrl);
+        localPdfUrl = null;
       }
     };
   }, [isOpen, source.link, isPDF]);
@@ -125,7 +127,7 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
       const searchWords = searchText.toLowerCase().split(/\s+/).filter(w => w.length > 3);
       const spans = textLayer.querySelectorAll('span');
       let firstMatchSpan: Element | null = null;
-      let matchedSpans: Element[] = [];
+      const matchedSpans: Element[] = [];
 
       spans.forEach((span) => {
         const text = (span.textContent || '').toLowerCase();
