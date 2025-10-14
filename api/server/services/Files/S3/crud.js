@@ -272,6 +272,9 @@ function extractKeyFromS3Url(fileUrlOrKey) {
 async function getS3FileStream(_req, filePath) {
   try {
     const Key = extractKeyFromS3Url(filePath);
+    logger.debug(`[getS3FileStream] Original filePath: ${filePath}`);
+    logger.debug(`[getS3FileStream] Extracted Key: ${Key}`);
+    logger.debug(`[getS3FileStream] Bucket: ${bucketName}`);
     const params = { Bucket: bucketName, Key };
     const s3 = initializeS3();
     const data = await s3.send(new GetObjectCommand(params));
