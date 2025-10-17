@@ -351,6 +351,7 @@ router.get('/download/:userId/:file_id', fileAccess, async (req, res) => {
 
       stream.pipe(res);
     } else {
+      logger.debug(`[DOWNLOAD ROUTE] Attempting S3 download for file_id: ${file_id}, filepath: ${file.filepath}, source: ${file.source}`);
       const fileStream = await getDownloadStream(req, file.filepath);
 
       fileStream.on('error', (streamError) => {
