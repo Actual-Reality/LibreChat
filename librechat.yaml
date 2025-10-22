@@ -122,17 +122,23 @@ endpoints:
       fetch: false  # Don't fetch additional models since we have specific ones defined
 
   custom:
-    - name: "Groq"
-      apiKey: "${{shared.GROQ_API_KEY}}"  # Use the same format as your other keys
-      baseURL: "https://api.groq.com/openai/v1"
+    - name: 'groq'
+      apiKey: '${GROQ_API_KEY}'
+      baseURL: 'https://api.groq.com/openai/v1/'
       models:
-        default: ["qwen3-32b", "llama-3.1-70b-versatile", "llama3-groq-70b-8192-tool-use-preview"]  # Include fallback models
+        default:
+          [
+            'qwen3-32b',
+            'llama3-70b-8192',
+            'llama3-8b-8192',
+            'llama2-70b-4096',
+            'mixtral-8x7b-32768',
+            'gemma-7b-it',
+          ]
         fetch: false
       titleConvo: true
-      titleModel: "qwen3-32b"
-      summarize: true
-      summaryModel: "qwen3-32b"
-      modelDisplayLabel: "Groq Qwen 3 32B"
+      titleModel: 'mixtral-8x7b-32768'
+      modelDisplayLabel: 'groq'
 
   gptPlugins:
     # Enable the plugins endpoint for tools like DALL-E
