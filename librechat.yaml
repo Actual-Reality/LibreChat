@@ -16,23 +16,35 @@ includedTools:
 # File configuration for RAG
 fileConfig:
   endpoints:
-    openAI:
-      fileLimit: 10000
-      fileSizeLimit: 20    # MB per file
-      totalSizeLimit: 100000  # MB total
+    default:
+      fileUploadLimit: 50
+      batchSize: 3
+      maxFiles: 5
       supportedMimeTypes:
-        - "application/pdf"
         - "text/plain"
         - "text/markdown"
+        - "application/pdf"
         - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        - "application/msword"
-        - "text/csv"
-      # Disable OCR processing - use RAG instead
-      disabled: false
-
-  # Global file configuration
-  serverFileSizeLimit: 100000
+        - "text/html"
+      parseConfig:
+        pdf:
+          ocr: true
+          ocrLanguage: "eng"
+          extractImages: false
+        text:
+          chunkSize: 512
+          chunkOverlap: 128
+      enabled: true
+      allowedTools:
+        - "file_upload"
+        - "file_processing"
+        - "retrieval"
+  serverFileSizeLimit: 200
   avatarSizeLimit: 2
+  # RAG-specific settings
+  vectorize: true # Enable automatic vectorization
+  retrievalTools:
+    - "embedding_search" # Use with your PatentSBERTa embeddings
 
 # Model Specifications - Define custom models with display labels
 modelSpecs:
@@ -108,18 +120,17 @@ endpoints:
       fetch: false  # Don't fetch additional models since we have specific ones defined
 
   custom:
-    # Custom endpoint configuration for Grok 4
-    - name: "xAI"
-      apiKey: "${GROK_API_KEY}"
-      baseURL: "https://api.x.ai/v1"
+    - name: "Groq"
+      apiKey: "${GROQ_API_KEY}"
+      baseURL: "https://api.groq.com/openai/v1"
       models:
-        default: ["grok-4-0709"]
+        default: ["qwen3-32b"]
         fetch: false
-      summarize: false
-      modelDisplayLabel: "Grok 4"
-      headers:
-        "Content-Type": "application/json"
-        "User-Agent": "LibreChat"
+      titleConvo: true
+      titleModel: "qwen3-32b"
+      summarize: true
+      summaryModel: "qwen3-32b"
+      modelDisplayLabel: "Groq Qwen 3 32B"
 
   gptPlugins:
     # Enable the plugins endpoint for tools like DALL-E
