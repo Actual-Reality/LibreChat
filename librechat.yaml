@@ -152,3 +152,8 @@ endpoints:
     capabilities: ["file_search", "web_search", "actions", "tools"]
     # Alternative: to show code interpreter for agents, add "execute_code" to the array:
     # capabilities: ["execute_code", "file_search", "web_search", "actions", "tools"]
+    providers:
+      anthropic:
+        enabled: true
+      groq:
+        enabled: true
