@@ -11,7 +11,7 @@ includedTools:
   - "image_gen_oai"
   - "file_search"
   - "retrieval"
-  # - "web_search"
+  - "web_search"
 
 # File configuration for RAG
 fileConfig:
@@ -56,8 +56,10 @@ modelSpecs:
       default: true
       description: "Expert in materials science, specifically in wood fiber"
       preset:
-        endpoint: "agents"
+        endpoint: "agents"  # Keep as agents as you mentioned it worked before
         agent_id: "agent_4-6sdH9tatftSOSFE2bYj"
+        model: "qwen3-32b"  # Specify the model for the agent to use
+        provider: "groq"    # Specify that it should use Groq
       showIconInMenu: true
       showIconInHeader: true
 
@@ -83,11 +85,11 @@ registration:
   socialLogins: ['github', 'google', 'discord', 'openid', 'facebook', 'apple']
 
 # Web Search Configuration
-# webSearch:
-#   searchProvider: "serper"
-#   scraperType: "firecrawl"
-#   rerankerType: "cohere"
-#   safeSearch: 2      # 0=off, 1=moderate, 2=strict
+webSearch:
+  searchProvider: "serper"
+  scraperType: "firecrawl"
+  rerankerType: "cohere"
+  safeSearch: 2      # 0=off, 1=moderate, 2=strict
 
 # Endpoints Configuration
 endpoints:
@@ -121,10 +123,10 @@ endpoints:
 
   custom:
     - name: "Groq"
-      apiKey: "${GROQ_API_KEY}"
+      apiKey: "${{shared.GROQ_API_KEY}}"  # Use the same format as your other keys
       baseURL: "https://api.groq.com/openai/v1"
       models:
-        default: ["qwen3-32b"]
+        default: ["qwen3-32b", "llama-3.1-70b-versatile", "llama3-groq-70b-8192-tool-use-preview"]  # Include fallback models
         fetch: false
       titleConvo: true
       titleModel: "qwen3-32b"
@@ -151,3 +153,5 @@ endpoints:
     capabilities: ["file_search", "web_search", "actions", "tools"]
     # Alternative: to show code interpreter for agents, add "execute_code" to the array:
     # capabilities: ["execute_code", "file_search", "web_search", "actions", "tools"]
+    defaultAgentEndpoint: "groq"  # Set Groq as the default endpoint for agents
+    defaultAgentModel: "qwen3-32b"  # Set Qwen3-32B as the default model for agents
