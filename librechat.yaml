@@ -41,12 +41,10 @@ fileConfig:
         - "retrieval"
   serverFileSizeLimit: 200
   avatarSizeLimit: 2
-  # RAG-specific settings
-  vectorize: true # Enable automatic vectorization
+  vectorize: true
   retrievalTools:
-    - "embedding_search" # Use with your PatentSBERTa embeddings
+    - "embedding_search"
 
-# Model Specifications - Define custom models with display labels
 modelSpecs:
   enforce: true  # Set to true if you want ONLY these models available
   prioritize: true # Prioritize these models in the UI
@@ -56,10 +54,8 @@ modelSpecs:
       default: true
       description: "Expert in materials science, specifically in wood fiber"
       preset:
-        endpoint: "agents"  # Keep as agents as you mentioned it worked before
-        agent_id: "agent_4-6sdH9tatftSOSFE2bYj"
-        model: "qwen3-32b"  # Specify the model for the agent to use
-        provider: "groq"    # Specify that it should use Groq
+        endpoint: "agents"
+        agent_id: "agent_zgrWE4KZcdU0gxSZ8ZdKi"
       showIconInMenu: true
       showIconInHeader: true
 
@@ -112,7 +108,7 @@ endpoints:
     # Your environment variables (OPENAI_API_KEY, etc.) will still be used
     models:
       default: ["gpt-4o-mini", "gpt-4o", "o3-mini", "o3"]  # Available models when selecting OpenAI endpoint
-      fetch: false  # Don't fetch additional models since we have specific ones defined
+      fetch: true
 
   anthropic:
     # This ensures the anthropic endpoint is properly configured
@@ -130,10 +126,7 @@ endpoints:
           [
             'qwen3-32b',
             'llama3-70b-8192',
-            'llama3-8b-8192',
-            'llama2-70b-4096',
-            'mixtral-8x7b-32768',
-            'gemma-7b-it',
+            'mixtral-8x7b-32768'
           ]
         fetch: false
       titleConvo: true
@@ -159,5 +152,3 @@ endpoints:
     capabilities: ["file_search", "web_search", "actions", "tools"]
     # Alternative: to show code interpreter for agents, add "execute_code" to the array:
     # capabilities: ["execute_code", "file_search", "web_search", "actions", "tools"]
-    defaultAgentEndpoint: "groq"  # Set Groq as the default endpoint for agents
-    defaultAgentModel: "qwen3-32b"  # Set Qwen3-32B as the default model for agents
