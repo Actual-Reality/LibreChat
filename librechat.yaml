@@ -55,6 +55,8 @@ modelSpecs:
       preset:
         endpoint: "openAI"
         model: "gpt-4.1"
+      showIconInMenu: true
+      showIconInHeader: true
 
     - name: "gemini"
       label: "Gemini"
@@ -62,6 +64,8 @@ modelSpecs:
       preset:
         endpoint: "google"
         model: "gemini-2.5-pro"
+      showIconInMenu: true
+      showIconInHeader: true
 
     - name: "claude"
       label: "Claude"
@@ -69,15 +73,17 @@ modelSpecs:
       preset:
         endpoint: "anthropic"
         model: "claude-3-5-sonnet-latest"
+      showIconInMenu: true
+      showIconInHeader: true
 
 
 # Interface Configuration
 interface:
   fileSearch: true
   fileCitations: true
-  endpointsMenu: false
-  modelSelect: false
-  parameters: false
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true
   sidePanel: true
   presets: false
   prompts: true
