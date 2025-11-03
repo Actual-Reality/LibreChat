@@ -38,6 +38,11 @@ fileConfig:
 modelSpecs:
   enforce: true  # Set to true if you want ONLY these models available
   prioritize: true # Prioritize these models in the UI
+  addedEndpoints:
+    - openAI
+    - google
+    - anthropic
+    - custom
   list:
     - name: "iris"
       label: "IRIS"
