@@ -11,7 +11,7 @@ includedTools:
   - "image_gen_oai"
   - "file_search"
   - "retrieval"
-   - "web_search"
+  - "web_search"
 
 # File configuration for RAG
 fileConfig:
@@ -48,6 +48,27 @@ modelSpecs:
         agent_id: "agent_9_c8-V8uAQ2hnVssBAtxv"
       showIconInMenu: true
       showIconInHeader: true
+
+    - name: "chatgpt"
+      label: "ChatGPT"
+      description: "OpenAI GPT-4.1 model for general reasoning (balanced speed and correctness)."
+      preset:
+        endpoint: "openAI"
+        model: "gpt-4.1"
+
+    - name: "gemini"
+      label: "Gemini"
+      description: "Google Gemini 2.5 Pro model."
+      preset:
+        endpoint: "google"
+        model: "gemini-2.5-pro"
+
+    - name: "claude"
+      label: "Claude"
+      description: "Anthropic Claude 3.5 Sonnet model."
+      preset:
+        endpoint: "anthropic"
+        model: "claude-3-5-sonnet-latest"
 
 
 # Interface Configuration
@@ -97,7 +118,7 @@ endpoints:
     # This ensures the openAI endpoint is properly configured
     # Your environment variables (OPENAI_API_KEY, etc.) will still be used
     models:
-      default: ["gpt-4o-mini", "gpt-4o", "o3-mini", "o3"]  # Available models when selecting OpenAI endpoint
+      default: ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1"]  # Available models when selecting OpenAI endpoint
       fetch: false  # Don't fetch additional models since we have specific ones defined
 
   anthropic:
