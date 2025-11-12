@@ -328,7 +328,10 @@ export default function CitationDialog({ isOpen, onOpenChange, source }: Citatio
             <div className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-text-secondary" />
               <h2 className="text-lg font-semibold text-text-primary">
-                {source.fileName || source.attribution || source.title || localize('com_citation_source')}
+                {source.fileName ||
+                  source.attribution ||
+                  source.title ||
+                  localize('com_citation_source')}
               </h2>
             </div>
           </div>
