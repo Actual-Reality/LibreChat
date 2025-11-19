@@ -62,14 +62,6 @@ modelSpecs:
         endpoint: "openAI"
         model: "gpt-5.1"
 
-    - name: "gpt-5.1-mini"
-      label: "GPT-5.1 Mini"
-      description: "Efficient and capable GPT-5 model"
-      group: "openAI"
-      preset:
-        endpoint: "openAI"
-        model: "gpt-5.1-mini"
-
     - name: "gemini-2.5-flash"
       label: "Gemini 2.5 Flash"
       description: "Google's fastest multimodal model"
