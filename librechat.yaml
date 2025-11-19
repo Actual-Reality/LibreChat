@@ -54,32 +54,61 @@ modelSpecs:
       showIconInMenu: true
       showIconInHeader: true
 
-    - name: "chatgpt"
-      label: "ChatGPT"
-      description: "OpenAI GPT-4.1 model for general reasoning (balanced speed and correctness)."
+    - name: "gpt-5.1"
+      label: "GPT-5.1"
+      description: "The next generation of OpenAI's flagship model"
+      group: "openAI"
       preset:
         endpoint: "openAI"
-        model: "gpt-4.1"
-      showIconInMenu: true
-      showIconInHeader: true
+        model: "gpt-5.1"
 
-    - name: "gemini"
-      label: "Gemini"
-      description: "Google Gemini 2.5 Pro model."
+    - name: "gpt-5.1-mini"
+      label: "GPT-5.1 Mini"
+      description: "Efficient and capable GPT-5 model"
+      group: "openAI"
+      preset:
+        endpoint: "openAI"
+        model: "gpt-5.1-mini"
+
+    - name: "gemini-2.5-flash"
+      label: "Gemini 2.5 Flash"
+      description: "Google's fastest multimodal model"
+      group: "google"
+      preset:
+        endpoint: "google"
+        model: "gemini-2.5-flash"
+
+    - name: "gemini-2.5-pro"
+      label: "Gemini 2.5 Pro"
+      description: "Google's capable multimodal model"
+      group: "google"
       preset:
         endpoint: "google"
         model: "gemini-2.5-pro"
-      showIconInMenu: true
-      showIconInHeader: true
 
-    - name: "claude"
-      label: "Claude"
-      description: "Anthropic Claude 3.5 Sonnet model."
+    - name: "gemini-3-pro-preview"
+      label: "Gemini 3 Pro Preview"
+      description: "Google's latest multimodal model"
+      group: "google"
+      preset:
+        endpoint: "google"
+        model: "gemini-3-pro-preview"
+
+    - name: "claude-4-5-sonnet"
+      label: "Claude 4.5 Sonnet"
+      description: "Next-gen Anthropic model with superior reasoning"
+      group: "anthropic"
       preset:
         endpoint: "anthropic"
-        model: "claude-3-5-sonnet-latest"
-      showIconInMenu: true
-      showIconInHeader: true
+        model: "claude-sonnet-4"
+
+    - name: "claude-3-7-sonnet"
+      label: "Claude 3.7 Sonnet"
+      description: "Latest Anthropic model with enhanced reasoning"
+      group: "anthropic"
+      preset:
+        endpoint: "anthropic"
+        model: "claude-3-7-sonnet"
 
 
 # Interface Configuration
@@ -122,36 +151,22 @@ endpoints:
     # This ensures the google endpoint is properly configured
     # Your environment variables (GOOGLE_KEY, etc.) will still be used
     models:
-      default: ["gemini-2.5-flash", "gemini-2.5-pro"]  # Available models when selecting Google endpoint
+      default: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-3-pro-preview"]  # Available models when selecting Google endpoint
       fetch: false  # Don't fetch additional models since we have specific ones defined
 
   openAI:
     # This ensures the openAI endpoint is properly configured
     # Your environment variables (OPENAI_API_KEY, etc.) will still be used
     models:
-      default: ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1"]  # Available models when selecting OpenAI endpoint
+      default: ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1", "gpt-5.1", "gpt-5.1-mini"]  # Available models when selecting OpenAI endpoint
       fetch: false  # Don't fetch additional models since we have specific ones defined
 
   anthropic:
     # This ensures the anthropic endpoint is properly configured
     # Your environment variables (ANTHROPIC_API_KEY, etc.) will still be used
     models:
-      default: ["claude-3-5-sonnet-latest", "claude-3-7-sonnet-latest"]  # Available models when selecting Anthropic endpoint
+      default: ["claude-3-5-sonnet-latest", "claude-3-7-sonnet-latest", "claude-4-5-sonnet"]  # Available models when selecting Anthropic endpoint
       fetch: false  # Don't fetch additional models since we have specific ones defined
-
-  custom:
-    # Custom endpoint configuration for Grok 4
-    - name: "xAI"
-      apiKey: "${GROK_API_KEY}"
-      baseURL: "https://api.x.ai/v1"
-      models:
-        default: ["grok-4-0709"]
-        fetch: false
-      summarize: false
-      modelDisplayLabel: "Grok 4"
-      headers:
-        "Content-Type": "application/json"
-        "User-Agent": "LibreChat"
 
   gptPlugins:
     # Enable the plugins endpoint for tools like DALL-E
