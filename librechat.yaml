@@ -92,16 +92,7 @@ modelSpecs:
       group: "anthropic"
       preset:
         endpoint: "anthropic"
-        model: "claude-sonnet-4"
-
-    - name: "claude-3-7-sonnet"
-      label: "Claude 3.7 Sonnet"
-      description: "Latest Anthropic model with enhanced reasoning"
-      group: "anthropic"
-      preset:
-        endpoint: "anthropic"
-        model: "claude-3-7-sonnet"
-
+        model: "claude-sonnet-4-5-20250929"
 
 # Interface Configuration
 interface:
